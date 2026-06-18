@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOUNDGLUCK 악기 스펙 비교 V2.0</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f8f9fa;
+    --bg3: #f0f1f3;
+    --border: #e2e4e8;
+    --text: #111318;
+    --text2: #5a5f6e;
+    --text3: #9299a8;
+    --accent: #1a56db;
+    --accent2: #e8effd;
+    --accent3: #1348c2;
+    --green: #0e9f6e;
+    --green-bg: #e8f8f2;
+    --red: #e02424;
+    --red-bg: #fde8e8;
+    --orange: #d97706;
+    --orange-bg: #fef3c7;
+    --purple: #7e3af2;
+    --purple-bg: #edebfe;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg2);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* TOP NAV */
+  .topnav {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    height: 52px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topnav-logo { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; color: var(--text); text-decoration: none; }
+  .topnav-logo span { color: var(--accent); }
+  .topnav-divider { width: 1px; height: 20px; background: var(--border); }
+  .topnav-sub { font-size: 12px; color: var(--text3); font-weight: 500; letter-spacing: 0.04em; }
+  .topnav-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .topnav-badge { font-size: 12px; color: var(--text3); background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 3px 10px; }
+
+  /* LAYOUT */
+  .app-layout { display: flex; min-height: calc(100vh - 52px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 256px;
+    min-width: 256px;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 52px);
+    position: sticky;
+    top: 52px;
+    overflow-y: auto;
+  }
+  .sidebar-search {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  .search-wrap { position: relative; }
+  .search-wrap svg { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
+  .search-input {
+    width: 100%;
+    padding: 7px 10px 7px 30px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--text);
+    background: var(--bg2);
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent); background: var(--bg); }
+
+  /* TREE */
+  .tree-wrap { padding: 8px 0; flex: 1; }
+  .tree-section-label {
+    padding: 10px 14px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+  }
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text2);
+    border-radius: 0;
+    transition: background 0.1s;
+  }
+  .cat-header:hover { background: var(--bg2); }
+  .cat-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .cat-arrow { margin-left: auto; color: var(--text3); transition: transform 0.2s; }
+  .cat-arrow.open { transform: rotate(90deg); }
+
+  .brand-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px 5px 26px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    transition: background 0.1s;
+  }
+  .brand-header:hover { background: var(--bg2); }
+  .brand-arrow { margin-left: auto; color: var(--text3); transition: transform 0.2s; }
+  .brand-arrow.open { transform: rotate(90deg); }
+
+  .model-list { overflow: hidden; }
+  .model-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px 4px 36px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text2);
+    transition: background 0.1s;
+  }
+  .model-item:hover { background: var(--bg2); color: var(--text); }
+  .model-item.checked { color: var(--accent); }
+  .model-item input[type="checkbox"] { accent-color: var(--accent); width: 13px; height: 13px; cursor: pointer; flex-shrink: 0; }
+  .model-name { flex: 1; }
+  .model-price { font-size: 10px; color: var(--text3); white-space: nowrap; }
+
+  /* SIDEBAR FOOTER */
+  .sidebar-footer { padding: 12px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .btn { flex: 1; padding: 7px 10px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--text2); transition: all 0.15s; }
+  .btn:hover { background: var(--bg2); }
+  .btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn.primary:hover { background: var(--accent3); }
+
+  /* MAIN */
+  .main { flex: 1; padding: 20px; overflow-x: auto; min-width: 0; }
+
+  /* TOOLBAR */
+  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .toolbar-title { font-size: 15px; font-weight: 700; color: var(--text); flex: 1; }
+  .toolbar-sub { font-size: 12px; color: var(--text3); font-weight: 400; margin-left: 6px; }
+  .toggle-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text2);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .toggle-chip:hover { background: var(--bg2); }
+  .toggle-chip.on { background: var(--accent2); color: var(--accent); border-color: var(--accent); }
+  .toggle-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* SUMMARY CARDS */
+  .summary-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .summary-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    box-shadow: var(--shadow);
+    min-width: 100px;
+    flex: 1;
+  }
+  .summary-label { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .summary-value { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.2; margin-top: 2px; }
+  .summary-desc { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  /* AUTO COMPARE PANEL */
+  .auto-panel {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .auto-panel-title { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 10px; letter-spacing: 0.02em; }
+  .auto-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .auto-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+  }
+  .auto-chip .label { color: var(--text3); }
+  .auto-chip .winner { font-weight: 700; color: var(--green); }
+
+  /* COMPARE TABLE */
+  .compare-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .table-wrap { overflow-x: auto; }
+  .compare-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+
+  /* Header */
+  .th-blank {
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+    width: 160px;
+    min-width: 140px;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+  }
+  .th-model {
+    background: var(--bg);
+    border-bottom: 2px solid var(--border);
+    border-left: 1px solid var(--border);
+    min-width: 160px;
+    text-align: center;
+    vertical-align: top;
+    padding: 0;
+  }
+  .model-header { padding: 14px 16px 12px; position: relative; }
+  .mh-brand { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 2px; }
+  .mh-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 1px; }
+  .mh-cat { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .mh-price { font-size: 13px; font-weight: 700; color: var(--accent); }
+  .mh-price-note { font-size: 10px; color: var(--text3); font-weight: 400; }
+  .model-remove {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .model-remove:hover { background: var(--red-bg); color: var(--red); border-color: var(--red); }
+
+  /* Section rows */
+  .tr-section td {
+    background: var(--bg3);
+    padding: 5px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    border-top: 2px solid var(--border);
+  }
+
+  /* Data rows */
+  .tr-data td { border-top: 1px solid var(--border); vertical-align: middle; }
+  .tr-data:hover td { background: rgba(26,86,219,0.02); }
+  .tr-data td:first-child { position: sticky; left: 0; background: var(--bg); z-index: 3; border-right: 1px solid var(--border); }
+  .tr-data:hover td:first-child { background: var(--bg2); }
+
+  .td-label { padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--text2); white-space: nowrap; }
+  .td-value { padding: 8px 14px; font-size: 12.5px; color: var(--text); text-align: center; border-left: 1px solid var(--border); }
+  .td-value.best { color: var(--green); font-weight: 700; background: var(--green-bg); }
+  .td-value.worst { color: var(--red); background: var(--red-bg); }
+  .td-value.na { color: var(--text3); }
+
+  /* Feature tags */
+  .feature-tags { display: flex; flex-wrap: wrap; gap: 3px; padding: 6px 10px; justify-content: center; }
+  .ftag { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: var(--accent2); color: var(--accent); }
+  .ftag.g { background: var(--green-bg); color: var(--green); }
+  .ftag.o { background: var(--orange-bg); color: var(--orange); }
+
+  /* EMPTY STATE */
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; text-align: center; gap: 12px; }
+  .empty-icon { width: 48px; height: 48px; border: 2px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+  .empty-title { font-size: 16px; font-weight: 700; color: var(--text2); }
+  .empty-sub { font-size: 13px; color: var(--text3); max-width: 280px; line-height: 1.6; }
+
+  /* VERSION BADGE */
+  .version-badge { font-size: 10px; color: var(--text3); background: var(--bg3); border-radius: 4px; padding: 2px 6px; font-weight: 600; }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .app-layout { flex-direction: column; }
+    .sidebar { width: 100%; min-width: 0; height: auto; max-height: 280px; position: static; border-right: none; border-bottom: 1px solid var(--border); }
+    .main { padding: 12px; }
+    .summary-row { display: none; }
+    .th-blank { width: 110px; min-width: 100px; }
+    .td-label { font-size: 11px; padding: 6px 8px; }
+    .td-value { font-size: 11px; padding: 6px 8px; }
+  }
+
+  /* SVG icons */
+  svg { display: inline-block; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div id="loading-overlay" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,0.92);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:14px">
+  <div style="width:36px;height:36px;border:3px solid #e2e4e8;border-top-color:#1a56db;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+  <div style="font-size:14px;color:#5a5f6e">데이터 불러오는 중...</div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a href="#" class="topnav-logo">SOUND<span>GLUCK</span></a>
+  <div class="topnav-divider"></div>
+  <span class="topnav-sub">악기 스펙 비교</span>
+  <div class="topnav-right">
+    <span class="version-badge">v2.0</span>
+    <span class="topnav-badge" id="selected-count">0개 선택</span>
+    <button class="btn primary" onclick="clearAll()" style="flex:none;padding:5px 12px;">전체 해제</button>
+  </div>
+</nav>
+
+<div class="app-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-search">
+      <div class="search-wrap">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <input class="search-input" id="search-input" placeholder="모델 검색..." oninput="filterModels(this.value)">
+      </div>
+    </div>
+    <div class="tree-wrap">
+      <div class="tree-section-label">카테고리 / 브랜드 / 모델</div>
+      <div id="tree"></div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="btn" onclick="clearAll()">해제</button>
+      <button class="btn primary" onclick="renderTable()">비교하기</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div id="summary-row" class="summary-row" style="display:none"></div>
+    <div id="auto-panel" class="auto-panel" style="display:none"></div>
+    <div class="toolbar">
+      <div class="toolbar-title">스펙 비교표<span class="toolbar-sub" id="compare-label"></span></div>
+      <div class="toggle-chip on" id="toggle-auto" onclick="toggleAutoCompare()">
+        <span class="dot"></span>자동 비교 하이라이트
+      </div>
+      <div class="toggle-chip" id="toggle-features" onclick="toggleFeatures()">
+        <span class="dot"></span>특장점 표시
+      </div>
+    </div>
+    <div class="compare-card">
+      <div class="table-wrap">
+        <table class="compare-table" id="compare-table">
+          <thead><tr id="header-row"></tr></thead>
+          <tbody id="table-body"></tbody>
+        </table>
+        <div id="empty-state" class="empty-state">
+          <div class="empty-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9299a8" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="9" y1="3" x2="9" y2="21"/>
+            </svg>
+          </div>
+          <div class="empty-title">모델을 선택하세요</div>
+          <div class="empty-sub">왼쪽에서 비교할 모델을 체크하면 스펙 비교표가 생성됩니다. 최대 6개까지 동시 비교 가능합니다.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════
+let DATA = {};
+
+// ════════════════════════════════════════
+//  GOOGLE SHEET FETCH
+// ════════════════════════════════════════
+const SHEET_ID = "1--DzB0hQ0dbVuhca3PNNr9JpMX2oLtmEi6PzYokWwXA";
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
+
+async function loadSheetData() {
+  document.getElementById('loading-overlay').style.display = 'flex';
+  try {
+    const res = await fetch(SHEET_URL);
+    const csv = await res.text();
+    DATA = parseCSV(csv);
+    buildTree();
+    renderTable();
+  } catch(e) {
+    document.getElementById('loading-overlay').innerHTML = '<div style="text-align:center"><div style="font-size:18px;font-weight:600;color:#e02424">데이터 로드 실패</div><div style="margin-top:8px;color:#5a5f6e">구글 시트 공유 설정을 확인해주세요</div><button onclick="loadSheetData()" style="margin-top:16px;padding:8px 20px;background:#1a56db;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px">다시 시도</button></div>';
+  } finally {
+    document.getElementById('loading-overlay').style.display = 'none';
+  }
+}
+
+function parseCSV(csv) {
+  const lines = csv.split('\n').map(l => l.trim()).filter(l => l);
+  const headers = parseCSVRow(lines[0]);
+  const result = {};
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = parseCSVRow(lines[i]);
+    if (cols.length < 3) continue;
+
+    const cat    = cols[0]  || '';
+    const brand  = cols[1]  || '';
+    const model  = cols[2]  || '';
+    const price  = cols[3]  || '문의';
+    const keys   = cols[4]  || '';   // 건반수
+    const ktype  = cols[5]  || '';   // 건반타입
+    const at     = cols[6]  || '-';  // 애프터터치
+    const poly   = cols[7]  || '';   // 동시발음
+    const engine = cols[8]  || '';   // 음원엔진
+    const weight = cols[9]  || '';   // 무게
+    const feats  = [cols[10],cols[11],cols[12],cols[13],cols[14]].filter(f => f && f.trim());
+
+    if (!cat || !brand || !model) continue;
+
+    if (!result[cat]) result[cat] = {};
+    if (!result[cat][brand]) result[cat][brand] = {};
+
+    // 스펙 구성 (카테고리별 분기)
+    const specs = {};
+    if (cat === '전자드럼') {
+      if (poly)   specs['모듈'] = { '음색': poly };
+      if (weight) specs['외형'] = { '무게': weight };
+    } else {
+      if (keys || ktype || at) {
+        specs['건반'] = {};
+        if (keys)   specs['건반']['건반 수'] = keys + '건반';
+        if (ktype)  specs['건반']['건반 타입'] = ktype;
+        if (at)     specs['건반']['애프터터치'] = at;
+      }
+      if (poly || engine) {
+        specs['음원'] = {};
+        if (poly)   specs['음원']['동시발음수'] = poly;
+        if (engine) specs['음원']['음원 엔진'] = engine;
+      }
+      if (weight) {
+        specs['외형'] = { '무게': weight };
+      }
+    }
+
+    // 가격 표시 처리
+    const priceNum = parseInt((price || '').replace(/[^0-9]/g, ''));
+    const priceStr = !isNaN(priceNum) && priceNum > 0
+      ? priceNum.toLocaleString('ko-KR') + '원'
+      : (price === '문의' ? '별도 문의' : price || '별도 문의');
+
+    result[cat][brand][model] = {
+      price: priceStr,
+      specs: specs,
+      features: feats
+    };
+  }
+  return result;
+}
+
+function parseCSVRow(row) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < row.length; i++) {
+    const c = row[i];
+    if (c === '"') {
+      if (inQ && row[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (c === ',' && !inQ) {
+      result.push(cur.trim());
+      cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+
+
+
+// ════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════
+let selected = new Set();
+let autoCompare = true;
+let showFeatures = false;
+
+// ════════════════════════════════════════
+//  BUILD TREE
+// ════════════════════════════════════════
+function buildTree() {
+  const tree = document.getElementById('tree');
+  tree.innerHTML = '';
+  for (const [cat, brands] of Object.entries(DATA)) {
+    const catEl = document.createElement('div');
+    catEl.innerHTML = `
+      <div class="cat-header" onclick="toggleSection(this)">
+        <span class="cat-dot"></span>
+        <span>${cat}</span>
+        <svg class="cat-arrow open" width="10" height="10" viewBox="0 0 10 10"><path d="M3 2l4 3-4 3" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+      </div>
+      <div class="cat-body">
+        ${Object.entries(brands).map(([brand, models]) => `
+          <div>
+            <div class="brand-header" onclick="toggleSection(this)">
+              <span>${brand}</span>
+              <svg class="brand-arrow open" width="9" height="9" viewBox="0 0 10 10"><path d="M3 2l4 3-4 3" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+            </div>
+            <div class="model-list">
+              ${Object.entries(models).map(([model, data]) => `
+                <div class="model-item" data-model="${model}" data-cat="${cat}" data-brand="${brand}">
+                  <input type="checkbox" id="cb-${model}" onchange="onCheck('${cat}','${brand}','${model}',this.checked)">
+                  <label class="model-name" for="cb-${model}">${model}</label>
+                  <span class="model-price">${data.price.replace('원','').replace('약 ','~').replace(',000,000','M').replace(',000','K')}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    tree.appendChild(catEl);
+  }
+}
+
+function toggleSection(el) {
+  const arrow = el.querySelector('.cat-arrow, .brand-arrow');
+  const next = el.nextElementSibling;
+  if (!next) return;
+  const isOpen = arrow.classList.contains('open');
+  if (isOpen) {
+    next.style.maxHeight = next.scrollHeight + 'px';
+    next.style.overflow = 'hidden';
+    requestAnimationFrame(() => next.style.maxHeight = '0');
+    arrow.classList.remove('open');
+  } else {
+    next.style.overflow = '';
+    next.style.maxHeight = next.scrollHeight + 'px';
+    setTimeout(() => next.style.maxHeight = '', 300);
+    arrow.classList.add('open');
+  }
+}
+
+function filterModels(q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('.model-item').forEach(el => {
+    const name = el.dataset.model.toLowerCase();
+    const brand = el.dataset.brand.toLowerCase();
+    el.style.display = (!q || name.includes(q) || brand.includes(q)) ? '' : 'none';
+  });
+}
+
+// ════════════════════════════════════════
+//  SELECTION
+// ════════════════════════════════════════
+function onCheck(cat, brand, model, checked) {
+  const key = `${cat}|${brand}|${model}`;
+  if (checked) {
+    if (selected.size >= 6) { alert('최대 6개까지 선택 가능합니다.'); document.getElementById(`cb-${model}`).checked = false; return; }
+    selected.add(key);
+  } else { selected.delete(key); }
+  document.querySelectorAll('.model-item').forEach(el => {
+    el.classList.toggle('checked', el.querySelector('input')?.checked);
+  });
+  updateCount();
+  renderTable();
+}
+
+function clearAll() {
+  selected.clear();
+  document.querySelectorAll('.model-item input').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.model-item').forEach(el => el.classList.remove('checked'));
+  updateCount();
+  renderTable();
+}
+
+function updateCount() {
+  document.getElementById('selected-count').textContent = `${selected.size}개 선택`;
+}
+
+// ════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════
+function renderTable() {
+  const headerRow = document.getElementById('header-row');
+  const tbody = document.getElementById('table-body');
+  const emptyState = document.getElementById('empty-state');
+  const summaryRow = document.getElementById('summary-row');
+  const autoPanel = document.getElementById('auto-panel');
+  const compareLabel = document.getElementById('compare-label');
+
+  if (selected.size === 0) {
+    headerRow.innerHTML = '';
+    tbody.innerHTML = '';
+    emptyState.style.display = '';
+    summaryRow.style.display = 'none';
+    autoPanel.style.display = 'none';
+    compareLabel.textContent = '';
+    return;
+  }
+
+  emptyState.style.display = 'none';
+
+  const models = [...selected].map(key => {
+    const [cat, brand, model] = key.split('|');
+    return { key, cat, brand, model, data: DATA[cat][brand][model] };
+  });
+
+  compareLabel.textContent = `  ${models.length}개 모델`;
+
+  // Summary
+  summaryRow.style.display = 'flex';
+  summaryRow.innerHTML = `
+    <div class="summary-card"><div class="summary-label">비교 모델</div><div class="summary-value">${models.length}</div><div class="summary-desc">선택됨 / 최대 6</div></div>
+    <div class="summary-card"><div class="summary-label">브랜드</div><div class="summary-value">${new Set(models.map(m=>m.brand)).size}</div><div class="summary-desc">브랜드</div></div>
+    <div class="summary-card"><div class="summary-label">가격 범위</div><div class="summary-value" style="font-size:14px">${getPriceRange(models)}</div><div class="summary-desc">시장 참고가</div></div>
+  `;
+
+  // Collect section/row keys
+  const sectionKeys = [];
+  models.forEach(m => Object.keys(m.data.specs).forEach(s => { if (!sectionKeys.includes(s)) sectionKeys.push(s); }));
+
+  // Numeric analysis for highlight
+  const numericRows = {};
+  sectionKeys.forEach(sec => {
+    const rowKeys = [];
+    models.forEach(m => { if (m.data.specs[sec]) Object.keys(m.data.specs[sec]).forEach(r => { if (!rowKeys.includes(r)) rowKeys.push(r); }); });
+    rowKeys.forEach(row => {
+      const vals = models.map(m => {
+        const v = m.data.specs[sec]?.[row] || '';
+        const n = parseInt(v.replace(/[^0-9]/g,''));
+        return isNaN(n) ? null : n;
+      });
+      if (vals.some(v => v !== null)) numericRows[sec+'|'+row] = vals;
+    });
+  });
+
+  // Auto compare summary
+  if (autoCompare && models.length > 1) {
+    const items = [];
+    [['동시발음수', false], ['앰프 출력', false], ['무게', true]].forEach(([rowKey, lowerBetter]) => {
+      sectionKeys.forEach(sec => {
+        const nk = sec+'|'+rowKey;
+        if (numericRows[nk]) {
+          const vals = numericRows[nk];
+          const targetVal = lowerBetter ? Math.min(...vals.filter(v=>v!==null)) : Math.max(...vals.filter(v=>v!==null));
+          const idx = vals.indexOf(targetVal);
+          if (idx >= 0 && new Set(vals.filter(v=>v!==null)).size > 1) {
+            items.push({ label: rowKey + (lowerBetter ? ' 가장 가벼움' : ' 우위'), winner: models[idx].model });
+          }
+        }
+      });
+    });
+    if (items.length) {
+      autoPanel.style.display = '';
+      autoPanel.innerHTML = `<div class="auto-panel-title">자동 비교 요약</div><div class="auto-chips">${items.map(i=>`<div class="auto-chip"><span class="label">${i.label}</span><span class="winner">${i.winner}</span></div>`).join('')}</div>`;
+    } else autoPanel.style.display = 'none';
+  } else autoPanel.style.display = 'none';
+
+  // Header
+  headerRow.innerHTML = `
+    <th class="th-blank"></th>
+    ${models.map(m => `
+      <th class="th-model">
+        <div class="model-header">
+          <div class="mh-brand">${m.brand}</div>
+          <div class="mh-name">${m.model}</div>
+          <div class="mh-cat">${m.cat}</div>
+          <div class="mh-price">${m.data.price} <span class="mh-price-note">네이버 참고가</span></div>
+          <button class="model-remove" onclick="removeModel('${m.key}')">✕</button>
+        </div>
+      </th>
+    `).join('')}
+  `;
+
+  // Body
+  let html = '';
+
+  if (showFeatures) {
+    html += `<tr class="tr-section"><td colspan="${models.length+1}">특장점</td></tr>`;
+    html += `<tr class="tr-data"><td class="td-label">주요 특장점</td>${models.map(m=>`<td class="td-value"><div class="feature-tags">${(m.data.features||[]).map((f,i)=>`<span class="ftag ${i%3===1?'g':i%3===2?'o':''}">${f}</span>`).join('')}</div></td>`).join('')}</tr>`;
+  }
+
+  sectionKeys.forEach(sec => {
+    html += `<tr class="tr-section"><td colspan="${models.length+1}">${sec}</td></tr>`;
+    const rowKeys = [];
+    models.forEach(m => { if (m.data.specs[sec]) Object.keys(m.data.specs[sec]).forEach(r => { if (!rowKeys.includes(r)) rowKeys.push(r); }); });
+    rowKeys.forEach(row => {
+      const vals = models.map(m => m.data.specs[sec]?.[row] || '-');
+      const nk = sec+'|'+row;
+      const numVals = autoCompare ? numericRows[nk] : null;
+      html += `<tr class="tr-data"><td class="td-label">${row}</td>${models.map((m,i) => {
+        let cls = 'td-value';
+        if (numVals && numVals[i] !== null) {
+          const maxV = Math.max(...numVals.filter(x=>x!==null));
+          const minV = Math.min(...numVals.filter(x=>x!==null));
+          if (maxV !== minV) {
+            const lowerBetter = row === '무게';
+            if (lowerBetter) { if (numVals[i] === minV) cls = 'td-value best'; else if (numVals[i] === maxV) cls = 'td-value worst'; }
+            else { if (numVals[i] === maxV) cls = 'td-value best'; else if (numVals[i] === minV) cls = 'td-value worst'; }
+          }
+        }
+        const v = vals[i];
+        if (v === '-') cls += ' na';
+        return `<td class="${cls}">${v === '-' ? '<span style="color:var(--text3)">—</span>' : v}</td>`;
+      }).join('')}</tr>`;
+    });
+  });
+
+  tbody.innerHTML = html;
+}
+
+function removeModel(key) {
+  selected.delete(key);
+  const [,,model] = key.split('|');
+  const cb = document.getElementById(`cb-${model}`);
+  if (cb) { cb.checked = false; cb.closest('.model-item')?.classList.remove('checked'); }
+  updateCount();
+  renderTable();
+}
+
+function getPriceRange(models) {
+  const prices = models.map(m => {
+    const p = m.data.price.replace(/[^0-9]/g, '');
+    return parseInt(p) || 0;
+  }).filter(p => p > 0);
+  if (!prices.length) return '-';
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const fmt = v => (v >= 1000000 ? (v/1000000).toFixed(0)+'M' : (v/10000).toFixed(0)+'만');
+  return min === max ? fmt(min) : `${fmt(min)} ~ ${fmt(max)}`;
+}
+
+function toggleAutoCompare() {
+  autoCompare = !autoCompare;
+  document.getElementById('toggle-auto').classList.toggle('on', autoCompare);
+  renderTable();
+}
+
+function toggleFeatures() {
+  showFeatures = !showFeatures;
+  document.getElementById('toggle-features').classList.toggle('on', showFeatures);
+  renderTable();
+}
+
+// INIT
+loadSheetData();
+</script>
+</body>
+</html>
