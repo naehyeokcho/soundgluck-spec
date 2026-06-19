@@ -3,791 +3,762 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOUNDGLUCK 악기 스펙 비교 V2.0</title>
+<title>SOUNDGLUCK 악기 스펙 비교 V2.1</title>
 <style>
-  :root {
-    --bg: #ffffff;
-    --bg2: #f8f9fa;
-    --bg3: #f0f1f3;
-    --border: #e2e4e8;
-    --text: #111318;
-    --text2: #5a5f6e;
-    --text3: #9299a8;
-    --accent: #1a56db;
-    --accent2: #e8effd;
-    --accent3: #1348c2;
-    --green: #0e9f6e;
-    --green-bg: #e8f8f2;
-    --red: #e02424;
-    --red-bg: #fde8e8;
-    --orange: #d97706;
-    --orange-bg: #fef3c7;
-    --purple: #7e3af2;
-    --purple-bg: #edebfe;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08);
-    --radius: 10px;
-    --radius-sm: 6px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg2);
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
-
-  /* TOP NAV */
-  .topnav {
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    height: 52px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .topnav-logo { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; color: var(--text); text-decoration: none; }
-  .topnav-logo span { color: var(--accent); }
-  .topnav-divider { width: 1px; height: 20px; background: var(--border); }
-  .topnav-sub { font-size: 12px; color: var(--text3); font-weight: 500; letter-spacing: 0.04em; }
-  .topnav-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
-  .topnav-badge { font-size: 12px; color: var(--text3); background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 3px 10px; }
-
-  /* LAYOUT */
-  .app-layout { display: flex; min-height: calc(100vh - 52px); }
-
-  /* SIDEBAR */
-  .sidebar {
-    width: 256px;
-    min-width: 256px;
-    background: var(--bg);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 52px);
-    position: sticky;
-    top: 52px;
-    overflow-y: auto;
-  }
-  .sidebar-search {
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
-    position: sticky;
-    top: 0;
-    z-index: 5;
-  }
-  .search-wrap { position: relative; }
-  .search-wrap svg { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
-  .search-input {
-    width: 100%;
-    padding: 7px 10px 7px 30px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    color: var(--text);
-    background: var(--bg2);
-    outline: none;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .search-input:focus { border-color: var(--accent); background: var(--bg); }
-
-  /* TREE */
-  .tree-wrap { padding: 8px 0; flex: 1; }
-  .tree-section-label {
-    padding: 10px 14px 4px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--text3);
-    text-transform: uppercase;
-  }
-  .cat-header {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    cursor: pointer;
-    user-select: none;
-    font-size: 12.5px;
-    font-weight: 700;
-    color: var(--text2);
-    border-radius: 0;
-    transition: background 0.1s;
-  }
-  .cat-header:hover { background: var(--bg2); }
-  .cat-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
-  .cat-arrow { margin-left: auto; color: var(--text3); transition: transform 0.2s; }
-  .cat-arrow.open { transform: rotate(90deg); }
-
-  .brand-header {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 14px 5px 26px;
-    cursor: pointer;
-    user-select: none;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text2);
-    transition: background 0.1s;
-  }
-  .brand-header:hover { background: var(--bg2); }
-  .brand-arrow { margin-left: auto; color: var(--text3); transition: transform 0.2s; }
-  .brand-arrow.open { transform: rotate(90deg); }
-
-  .model-list { overflow: hidden; }
-  .model-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 14px 4px 36px;
-    cursor: pointer;
-    font-size: 12px;
-    color: var(--text2);
-    transition: background 0.1s;
-  }
-  .model-item:hover { background: var(--bg2); color: var(--text); }
-  .model-item.checked { color: var(--accent); }
-  .model-item input[type="checkbox"] { accent-color: var(--accent); width: 13px; height: 13px; cursor: pointer; flex-shrink: 0; }
-  .model-name { flex: 1; }
-  .model-price { font-size: 10px; color: var(--text3); white-space: nowrap; }
-
-  /* SIDEBAR FOOTER */
-  .sidebar-footer { padding: 12px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
-  .btn { flex: 1; padding: 7px 10px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--text2); transition: all 0.15s; }
-  .btn:hover { background: var(--bg2); }
-  .btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
-  .btn.primary:hover { background: var(--accent3); }
-
-  /* MAIN */
-  .main { flex: 1; padding: 20px; overflow-x: auto; min-width: 0; }
-
-  /* TOOLBAR */
-  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-  .toolbar-title { font-size: 15px; font-weight: 700; color: var(--text); flex: 1; }
-  .toolbar-sub { font-size: 12px; color: var(--text3); font-weight: 400; margin-left: 6px; }
-  .toggle-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text2);
-    transition: all 0.15s;
-    user-select: none;
-  }
-  .toggle-chip:hover { background: var(--bg2); }
-  .toggle-chip.on { background: var(--accent2); color: var(--accent); border-color: var(--accent); }
-  .toggle-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-
-  /* SUMMARY CARDS */
-  .summary-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-  .summary-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    box-shadow: var(--shadow);
-    min-width: 100px;
-    flex: 1;
-  }
-  .summary-label { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
-  .summary-value { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.2; margin-top: 2px; }
-  .summary-desc { font-size: 11px; color: var(--text3); margin-top: 1px; }
-
-  /* AUTO COMPARE PANEL */
-  .auto-panel {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 18px;
-    margin-bottom: 14px;
-    box-shadow: var(--shadow);
-  }
-  .auto-panel-title { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 10px; letter-spacing: 0.02em; }
-  .auto-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .auto-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
-    font-size: 11px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-  }
-  .auto-chip .label { color: var(--text3); }
-  .auto-chip .winner { font-weight: 700; color: var(--green); }
-
-  /* COMPARE TABLE */
-  .compare-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-  .table-wrap { overflow-x: auto; }
-  .compare-table { width: 100%; border-collapse: collapse; min-width: 500px; }
-
-  /* Header */
-  .th-blank {
-    background: var(--bg2);
-    border-bottom: 2px solid var(--border);
-    width: 160px;
-    min-width: 140px;
-    position: sticky;
-    left: 0;
-    z-index: 5;
-  }
-  .th-model {
-    background: var(--bg);
-    border-bottom: 2px solid var(--border);
-    border-left: 1px solid var(--border);
-    min-width: 160px;
-    text-align: center;
-    vertical-align: top;
-    padding: 0;
-  }
-  .model-header { padding: 14px 16px 12px; position: relative; }
-  .mh-brand { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 2px; }
-  .mh-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 1px; }
-  .mh-cat { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
-  .mh-price { font-size: 13px; font-weight: 700; color: var(--accent); }
-  .mh-price-note { font-size: 10px; color: var(--text3); font-weight: 400; }
-  .model-remove {
-    position: absolute;
-    top: 8px; right: 8px;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text3);
-    cursor: pointer;
-    font-size: 11px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
-  }
-  .model-remove:hover { background: var(--red-bg); color: var(--red); border-color: var(--red); }
-
-  /* Section rows */
-  .tr-section td {
-    background: var(--bg3);
-    padding: 5px 14px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text3);
-    border-top: 2px solid var(--border);
-  }
-
-  /* Data rows */
-  .tr-data td { border-top: 1px solid var(--border); vertical-align: middle; }
-  .tr-data:hover td { background: rgba(26,86,219,0.02); }
-  .tr-data td:first-child { position: sticky; left: 0; background: var(--bg); z-index: 3; border-right: 1px solid var(--border); }
-  .tr-data:hover td:first-child { background: var(--bg2); }
-
-  .td-label { padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--text2); white-space: nowrap; }
-  .td-value { padding: 8px 14px; font-size: 12.5px; color: var(--text); text-align: center; border-left: 1px solid var(--border); }
-  .td-value.best { color: var(--green); font-weight: 700; background: var(--green-bg); }
-  .td-value.worst { color: var(--red); background: var(--red-bg); }
-  .td-value.na { color: var(--text3); }
-
-  /* Feature tags */
-  .feature-tags { display: flex; flex-wrap: wrap; gap: 3px; padding: 6px 10px; justify-content: center; }
-  .ftag { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: var(--accent2); color: var(--accent); }
-  .ftag.g { background: var(--green-bg); color: var(--green); }
-  .ftag.o { background: var(--orange-bg); color: var(--orange); }
-
-  /* EMPTY STATE */
-  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; text-align: center; gap: 12px; }
-  .empty-icon { width: 48px; height: 48px; border: 2px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-  .empty-title { font-size: 16px; font-weight: 700; color: var(--text2); }
-  .empty-sub { font-size: 13px; color: var(--text3); max-width: 280px; line-height: 1.6; }
-
-  /* VERSION BADGE */
-  .version-badge { font-size: 10px; color: var(--text3); background: var(--bg3); border-radius: 4px; padding: 2px 6px; font-weight: 600; }
-
-  /* MOBILE */
-  @media (max-width: 768px) {
-    .app-layout { flex-direction: column; }
-    .sidebar { width: 100%; min-width: 0; height: auto; max-height: 280px; position: static; border-right: none; border-bottom: 1px solid var(--border); }
-    .main { padding: 12px; }
-    .summary-row { display: none; }
-    .th-blank { width: 110px; min-width: 100px; }
-    .td-label { font-size: 11px; padding: 6px 8px; }
-    .td-value { font-size: 11px; padding: 6px 8px; }
-  }
-
-  /* SVG icons */
-  svg { display: inline-block; vertical-align: middle; }
+:root{--bg:#fff;--bg2:#f8f9fa;--bg3:#f0f1f3;--border:#e2e4e8;--text:#111318;--text2:#5a5f6e;--text3:#9299a8;--accent:#1a56db;--accent2:#e8effd;--accent3:#1348c2;--cat-dp:#1a56db;--cat-dp-bg:#e8effd;--cat-dp-bd:#b3c8f8;--cat-sy:#0e9f6e;--cat-sy-bg:#e6f9f2;--cat-sy-bd:#6ee7c3;--cat-dr:#d97706;--cat-dr-bg:#fff8e6;--cat-dr-bd:#fcd34d;--green:#0e9f6e;--green-bg:#e8f8f2;--red:#e02424;--red-bg:#fde8e8;--orange:#d97706;--orange-bg:#fef3c7;--shadow:0 1px 3px rgba(0,0,0,.08);--r:10px;--rs:6px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg2);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;}
+.topnav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:14px;height:52px;position:sticky;top:0;z-index:200;}
+.topnav-logo{font-size:15px;font-weight:700;letter-spacing:.08em;text-decoration:none;color:var(--text);}
+.topnav-logo span{color:var(--accent);}
+.tdiv{width:1px;height:20px;background:var(--border);}
+.topnav-sub{font-size:12px;color:var(--text3);font-weight:500;}
+.topnav-right{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.ver{font-size:10px;color:var(--text3);background:var(--bg3);border-radius:4px;padding:2px 6px;font-weight:600;}
+.sel-badge{font-size:12px;color:var(--text3);background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:3px 10px;}
+.btn{padding:6px 12px;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--text2);transition:all .15s;}
+.btn:hover{background:var(--bg2);}
+.btn.pri{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn.pri:hover{background:var(--accent3);}
+.app{display:flex;min-height:calc(100vh - 52px);}
+.sidebar{width:234px;min-width:234px;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;height:calc(100vh - 52px);position:sticky;top:52px;overflow-y:auto;}
+.sb-search{padding:11px 13px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:5;}
+.sw{position:relative;}
+.sw svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
+.si{width:100%;padding:7px 10px 7px 28px;border:1px solid var(--border);border-radius:var(--rs);font-size:12px;color:var(--text);background:var(--bg2);outline:none;}
+.si:focus{border-color:var(--accent);background:var(--bg);}
+.tree-wrap{padding:5px 0;flex:1;}
+.cat-hd{display:flex;align-items:center;gap:7px;padding:6px 13px;cursor:pointer;user-select:none;}
+.cat-hd:hover{background:var(--bg2);}
+.cat-pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;}
+.cat-pill.dp{background:var(--cat-dp-bg);color:var(--cat-dp);border:1px solid var(--cat-dp-bd);}
+.cat-pill.sy{background:var(--cat-sy-bg);color:var(--cat-sy);border:1px solid var(--cat-sy-bd);}
+.cat-pill.dr{background:var(--cat-dr-bg);color:var(--cat-dr);border:1px solid var(--cat-dr-bd);}
+.ca{margin-left:auto;color:var(--text3);transition:transform .2s;font-size:10px;}
+.ca.open{transform:rotate(90deg);}
+.br-hd{display:flex;align-items:center;padding:4px 13px 4px 22px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);}
+.br-hd:hover{background:var(--bg2);}
+.ba{margin-left:auto;color:var(--text3);transition:transform .2s;font-size:9px;}
+.ba.open{transform:rotate(90deg);}
+.ml{overflow:hidden;}
+.mi{display:flex;align-items:center;gap:7px;padding:3px 13px 3px 32px;cursor:pointer;font-size:12px;color:var(--text2);}
+.mi:hover{background:var(--bg2);}
+.mi.checked{color:var(--accent);}
+.mi input[type=checkbox]{accent-color:var(--accent);width:12px;height:12px;flex-shrink:0;}
+.mn{flex:1;}
+.sb-foot{padding:11px 13px;border-top:1px solid var(--border);display:flex;gap:7px;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.top-panel{background:var(--bg);border-bottom:1px solid var(--border);padding:13px 18px 0;}
+.cat-cards{display:flex;gap:9px;margin-bottom:13px;}
+.cat-card{flex:1;padding:10px 13px;border-radius:var(--r);cursor:pointer;border:1.5px solid transparent;transition:border-color .15s,transform .1s;display:flex;align-items:center;gap:9px;}
+.cat-card:hover{transform:translateY(-1px);}
+.cat-card.dp{background:var(--cat-dp-bg);border-color:var(--cat-dp-bd);}
+.cat-card.dp.active{border-color:var(--cat-dp);}
+.cat-card.sy{background:var(--cat-sy-bg);border-color:var(--cat-sy-bd);}
+.cat-card.sy.active{border-color:var(--cat-sy);}
+.cat-card.dr{background:var(--cat-dr-bg);border-color:var(--cat-dr-bd);}
+.cat-card.dr.active{border-color:var(--cat-dr);}
+.ci{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+.cat-card.dp .ci{background:var(--cat-dp);color:#fff;}
+.cat-card.sy .ci{background:var(--cat-sy);color:#fff;}
+.cat-card.dr .ci{background:var(--cat-dr);color:#fff;}
+.cc-name{font-size:12px;font-weight:600;}
+.cat-card.dp .cc-name{color:var(--cat-dp);}
+.cat-card.sy .cc-name{color:var(--cat-sy);}
+.cat-card.dr .cc-name{color:var(--cat-dr);}
+.cc-cnt{font-size:10px;color:var(--text3);margin-top:1px;}
+.tab-nav{display:flex;gap:0;}
+.tb{padding:8px 16px;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tb:hover{color:var(--text2);}
+.tb.active{color:var(--accent);border-bottom-color:var(--accent);}
+.content{flex:1;overflow:auto;padding:15px 18px;}
+.panel{display:none;}
+.panel.active{display:block;}
+.filter-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.fl{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+.fc{font-size:11px;padding:4px 11px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--text2);transition:all .12s;white-space:nowrap;}
+.fc:hover{background:var(--bg2);}
+.fc.on{background:var(--cat-dp-bg);color:var(--cat-dp);border-color:var(--cat-dp-bd);}
+.dv{width:1px;height:16px;background:var(--border);flex-shrink:0;}
+.sec-lbl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin:16px 0 9px;}
+.reco-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;}
+.rc{padding:11px 13px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:background .12s,border-color .12s;}
+.rc:hover{background:var(--bg2);border-color:var(--accent);}
+.rt{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;display:inline-block;margin-bottom:5px;}
+.rt.dp{background:var(--cat-dp-bg);color:var(--cat-dp);}
+.rt.sy{background:var(--cat-sy-bg);color:var(--cat-sy);}
+.rt.dr{background:var(--cat-dr-bg);color:var(--cat-dr);}
+.rn{font-size:13px;font-weight:700;color:var(--text);}
+.rd{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5;}
+.cs{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
+.cs-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:8px;}
+.cs-sub{font-size:11px;color:var(--text3);font-weight:400;}
+.cc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:13px;}
+.cl{font-size:11px;color:var(--text3);font-weight:600;}
+.csel{padding:5px 9px;border:1px solid var(--border);border-radius:var(--rs);font-size:12px;color:var(--text);background:var(--bg);cursor:pointer;outline:none;}
+.csel:focus{border-color:var(--accent);}
+.cw{position:relative;width:100%;}
+.compare-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;}
+.tw{overflow-x:auto;}
+.ct{width:100%;border-collapse:collapse;min-width:500px;}
+.th-blank{background:var(--bg2);border-bottom:2px solid var(--border);width:155px;min-width:135px;position:sticky;left:0;z-index:5;}
+.th-model{background:var(--bg);border-bottom:2px solid var(--border);border-left:1px solid var(--border);min-width:155px;text-align:center;vertical-align:top;padding:0;}
+.mhd{padding:13px 15px 11px;position:relative;}
+.mh-brand{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:2px;}
+.mh-cb{font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px;display:inline-block;margin-bottom:3px;}
+.mh-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.mh-price{font-size:12px;font-weight:700;color:var(--accent);}
+.mh-pn{font-size:10px;color:var(--text3);font-weight:400;}
+.mr{position:absolute;top:8px;right:8px;width:19px;height:19px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text3);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.mr:hover{background:var(--red-bg);color:var(--red);border-color:var(--red);}
+.tr-sec td{background:var(--bg3);padding:5px 13px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);border-top:2px solid var(--border);}
+.tr-d td{border-top:1px solid var(--border);vertical-align:middle;}
+.tr-d:hover td{background:rgba(26,86,219,.02);}
+.tr-d td:first-child{position:sticky;left:0;background:var(--bg);z-index:3;border-right:1px solid var(--border);}
+.tr-d:hover td:first-child{background:var(--bg2);}
+.tdl{padding:7px 11px;font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;}
+.tdv{padding:7px 13px;font-size:12px;color:var(--text);text-align:center;border-left:1px solid var(--border);}
+.tdv.best{color:var(--green);font-weight:700;background:var(--green-bg);}
+.tdv.worst{color:var(--red);background:var(--red-bg);}
+.tdv.na{color:var(--text3);}
+.ftags{display:flex;flex-wrap:wrap;gap:3px;padding:5px 9px;justify-content:center;}
+.ft{font-size:10px;font-weight:600;padding:2px 5px;border-radius:4px;background:var(--accent2);color:var(--accent);}
+.ft.g{background:var(--green-bg);color:var(--green);}
+.ft.o{background:var(--orange-bg);color:var(--orange);}
+.toolbar{display:flex;align-items:center;gap:9px;margin-bottom:13px;flex-wrap:wrap;}
+.tt{font-size:15px;font-weight:700;color:var(--text);flex:1;}
+.ts{font-size:12px;color:var(--text3);font-weight:400;margin-left:6px;}
+.tc{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--text2);user-select:none;}
+.tc:hover{background:var(--bg2);}
+.tc.on{background:var(--accent2);color:var(--accent);border-color:var(--accent);}
+.tc .dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.sum-row{display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap;}
+.sc{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:11px 15px;box-shadow:var(--shadow);min-width:100px;flex:1;}
+.sl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.sv{font-size:21px;font-weight:700;color:var(--text);line-height:1.2;margin-top:2px;}
+.sd{font-size:11px;color:var(--text3);margin-top:1px;}
+.ap{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:13px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
+.ap-t{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:9px;}
+.acs{display:flex;flex-wrap:wrap;gap:6px;}
+.ac{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:var(--rs);font-size:11px;background:var(--bg2);border:1px solid var(--border);}
+.ac .al{color:var(--text3);}
+.ac .aw{font-weight:700;color:var(--green);}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:55px 20px;text-align:center;gap:11px;}
+.ei{width:46px;height:46px;border:2px solid var(--border);border-radius:11px;display:flex;align-items:center;justify-content:center;}
+.et{font-size:15px;font-weight:700;color:var(--text2);}
+.es{font-size:13px;color:var(--text3);max-width:270px;line-height:1.6;}
+.legend{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:9px;font-size:11px;color:var(--text3);}
+.li{display:flex;align-items:center;gap:4px;}
+.ls{width:10px;height:10px;border-radius:2px;display:inline-block;}
+.lsc{width:10px;height:10px;border-radius:50%;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+svg{display:inline-block;vertical-align:middle;}
 </style>
 </head>
 <body>
-<div id="loading-overlay" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,0.92);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:14px">
-  <div style="width:36px;height:36px;border:3px solid #e2e4e8;border-top-color:#1a56db;border-radius:50%;animation:spin 0.8s linear infinite"></div>
-  <div style="font-size:14px;color:#5a5f6e">데이터 불러오는 중...</div>
-</div>
-<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
-<!-- TOP NAV -->
+<div id="lo" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,.92);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:13px">
+  <div style="width:34px;height:34px;border:3px solid #e2e4e8;border-top-color:#1a56db;border-radius:50%;animation:spin .8s linear infinite"></div>
+  <div style="font-size:13px;color:#5a5f6e">데이터 불러오는 중...</div>
+</div>
+
 <nav class="topnav">
   <a href="#" class="topnav-logo">SOUND<span>GLUCK</span></a>
-  <div class="topnav-divider"></div>
+  <div class="tdiv"></div>
   <span class="topnav-sub">악기 스펙 비교</span>
   <div class="topnav-right">
-    <span class="version-badge">v2.0</span>
-    <span class="topnav-badge" id="selected-count">0개 선택</span>
-    <button class="btn primary" onclick="clearAll()" style="flex:none;padding:5px 12px;">전체 해제</button>
+    <span class="ver">v2.1</span>
+    <span class="sel-badge" id="sel-count">0개 선택</span>
+    <button class="btn pri" onclick="clearAll()" style="flex:none">전체 해제</button>
   </div>
 </nav>
 
-<div class="app-layout">
-  <!-- SIDEBAR -->
+<div class="app">
   <aside class="sidebar">
-    <div class="sidebar-search">
-      <div class="search-wrap">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-          <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-        <input class="search-input" id="search-input" placeholder="모델 검색..." oninput="filterModels(this.value)">
+    <div class="sb-search">
+      <div class="sw">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <input class="si" placeholder="모델 검색..." oninput="filterModels(this.value)">
       </div>
     </div>
-    <div class="tree-wrap">
-      <div class="tree-section-label">카테고리 / 브랜드 / 모델</div>
-      <div id="tree"></div>
-    </div>
-    <div class="sidebar-footer">
-      <button class="btn" onclick="clearAll()">해제</button>
-      <button class="btn primary" onclick="renderTable()">비교하기</button>
+    <div class="tree-wrap" id="tree"></div>
+    <div class="sb-foot">
+      <button class="btn" style="flex:1" onclick="clearAll()">해제</button>
+      <button class="btn pri" style="flex:1" onclick="switchTab('compare')">비교하기</button>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
-    <div id="summary-row" class="summary-row" style="display:none"></div>
-    <div id="auto-panel" class="auto-panel" style="display:none"></div>
-    <div class="toolbar">
-      <div class="toolbar-title">스펙 비교표<span class="toolbar-sub" id="compare-label"></span></div>
-      <div class="toggle-chip on" id="toggle-auto" onclick="toggleAutoCompare()">
-        <span class="dot"></span>자동 비교 하이라이트
-      </div>
-      <div class="toggle-chip" id="toggle-features" onclick="toggleFeatures()">
-        <span class="dot"></span>특장점 표시
+    <div class="top-panel">
+      <div class="cat-cards" id="cat-cards"></div>
+      <div class="tab-nav">
+        <button class="tb active" onclick="switchTab('filter')" id="tab-filter">필터 / 추천</button>
+        <button class="tb" onclick="switchTab('lineup')" id="tab-lineup">브랜드 라인업</button>
+        <button class="tb" onclick="switchTab('rival')" id="tab-rival">경쟁 모델 비교</button>
+        <button class="tb" onclick="switchTab('compare')" id="tab-compare">스펙 비교표</button>
       </div>
     </div>
-    <div class="compare-card">
-      <div class="table-wrap">
-        <table class="compare-table" id="compare-table">
-          <thead><tr id="header-row"></tr></thead>
-          <tbody id="table-body"></tbody>
-        </table>
-        <div id="empty-state" class="empty-state">
-          <div class="empty-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9299a8" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
-              <line x1="9" y1="3" x2="9" y2="21"/>
-            </svg>
+
+    <div class="content">
+
+      <!-- TAB 1 -->
+      <div class="panel active" id="panel-filter">
+        <div class="filter-row">
+          <span class="fl">가격대</span>
+          <span class="fc" onclick="toggleFilter(this,'price','u50')">입문 ~50만</span>
+          <span class="fc" onclick="toggleFilter(this,'price','50to100')">보급 50~100만</span>
+          <span class="fc" onclick="toggleFilter(this,'price','100to200')">중급 100~200만</span>
+          <span class="fc" onclick="toggleFilter(this,'price','o200')">고급 200만+</span>
+          <div class="dv"></div>
+          <span class="fl">타겟</span>
+          <span class="fc" onclick="toggleFilter(this,'target','child')">어린이/입문</span>
+          <span class="fc" onclick="toggleFilter(this,'target','church')">교회/찬양팀</span>
+          <span class="fc" onclick="toggleFilter(this,'target','hobby')">취미/가정</span>
+          <span class="fc" onclick="toggleFilter(this,'target','stage')">무대/공연</span>
+          <span class="fc" onclick="toggleFilter(this,'target','studio')">홈스튜디오</span>
+        </div>
+        <div class="sec-lbl">추천 구성</div>
+        <div class="reco-grid" id="reco-grid"></div>
+        <div class="sec-lbl" style="margin-top:18px">필터 결과</div>
+        <div id="filter-results" style="font-size:13px;color:var(--text3)">필터를 선택하면 모델이 표시됩니다.</div>
+      </div>
+
+      <!-- TAB 2 -->
+      <div class="panel" id="panel-lineup">
+        <div class="cs">
+          <div class="cs-title">브랜드 라인업 <span class="cs-sub">브랜드 → 품목 선택</span></div>
+          <div class="cc">
+            <span class="cl">브랜드</span>
+            <select class="csel" id="lu-brand" onchange="renderLineup()"><option value="">선택</option></select>
+            <span class="cl">품목</span>
+            <select class="csel" id="lu-cat" onchange="renderLineup()">
+              <option value="">선택</option>
+              <option value="디지털피아노">디지털피아노</option>
+              <option value="신디사이저">신디사이저</option>
+              <option value="전자드럼">전자드럼</option>
+            </select>
           </div>
-          <div class="empty-title">모델을 선택하세요</div>
-          <div class="empty-sub">왼쪽에서 비교할 모델을 체크하면 스펙 비교표가 생성됩니다. 최대 6개까지 동시 비교 가능합니다.</div>
+          <div class="cw" style="height:300px"><canvas id="lu-bar" role="img" aria-label="브랜드 라인업 가격 바 차트">브랜드 라인업 가격 분포를 보여주는 차트입니다.</canvas></div>
+          <div id="lu-legend" class="legend" style="margin-top:8px"></div>
+        </div>
+        <div class="cs">
+          <div class="cs-title">가격 포지션 분포 <span class="cs-sub">x축: 가격, y축: 스펙점수</span></div>
+          <div class="cw" style="height:270px"><canvas id="lu-bubble" role="img" aria-label="가격 포지션 버블 차트">가격 대비 스펙점수 분포 버블 차트입니다.</canvas></div>
         </div>
       </div>
+
+      <!-- TAB 3 -->
+      <div class="panel" id="panel-rival">
+        <div class="cs">
+          <div class="cs-title">경쟁 모델 비교 <span class="cs-sub">품목 → 브랜드 선택</span></div>
+          <div class="cc">
+            <span class="cl">품목</span>
+            <select class="csel" id="rv-cat" onchange="updateRivalBrands()">
+              <option value="">선택</option>
+              <option value="디지털피아노">디지털피아노</option>
+              <option value="신디사이저">신디사이저</option>
+              <option value="전자드럼">전자드럼</option>
+            </select>
+            <span class="cl">브랜드 (복수)</span>
+            <div id="rv-brands" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+          </div>
+          <div class="cw" style="height:320px"><canvas id="rv-bar" role="img" aria-label="경쟁 모델 가격 바 차트">브랜드별 경쟁 모델 가격 비교 차트입니다.</canvas></div>
+          <div id="rv-bar-legend" class="legend" style="margin-top:8px"></div>
+        </div>
+        <div class="cs">
+          <div class="cs-title">브랜드별 가격 포지션 분포 <span class="cs-sub">색상으로 브랜드 구분</span></div>
+          <div id="rv-bubble-legend" class="legend"></div>
+          <div class="cw" style="height:270px"><canvas id="rv-bubble" role="img" aria-label="브랜드별 가격 포지션 버블 차트">브랜드별 가격 포지션 분포 버블 차트입니다.</canvas></div>
+        </div>
+      </div>
+
+      <!-- TAB 4 -->
+      <div class="panel" id="panel-compare">
+        <div id="sum-row" class="sum-row" style="display:none"></div>
+        <div id="auto-panel" class="ap" style="display:none"></div>
+        <div class="toolbar">
+          <div class="tt">스펙 비교표<span class="ts" id="cmp-label"></span></div>
+          <div class="tc on" id="tog-auto" onclick="toggleAuto()"><span class="dot"></span>자동 비교 하이라이트</div>
+          <div class="tc" id="tog-feat" onclick="toggleFeat()"><span class="dot"></span>특장점 표시</div>
+        </div>
+        <div class="compare-card">
+          <div class="tw">
+            <table class="ct" id="cmp-table">
+              <thead><tr id="hdr-row"></tr></thead>
+              <tbody id="tbl-body"></tbody>
+            </table>
+            <div id="empty" class="empty">
+              <div class="ei"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9299a8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="3" x2="9" y2="21"/></svg></div>
+              <div class="et">모델을 선택하세요</div>
+              <div class="es">왼쪽에서 비교할 모델을 체크하면 스펙 비교표가 생성됩니다. 최대 6개까지 동시 비교 가능합니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ════════════════════════════════════════
-//  DATA
-// ════════════════════════════════════════
-let DATA = {};
+const SHEET_ID='1--DzB0hQ0dbVuhca3PNNr9JpMX2oLtmEi6PzYokWwXA';
+const SHEETS=['신디사이저','디지털피아노','전자드럼'];
+const CAT_INFO={'디지털피아노':{cls:'dp',color:'#1a56db',icon:'♪'},'신디사이저':{cls:'sy',color:'#0e9f6e',icon:'♫'},'전자드럼':{cls:'dr',color:'#d97706',icon:'◎'}};
+const BCOLS=['#1a56db','#0e9f6e','#d97706','#7e3af2','#e02424','#0694a2','#c27803','#057a55'];
+let DATA={},RAW_HDR={};
+let selected=new Set(),autoComp=true,showFeat=false;
+let activeF={price:null,target:null};
+let rvBrands=new Set();
+let luBarC=null,luBubC=null,rvBarC=null,rvBubC=null;
 
-// ════════════════════════════════════════
-//  GOOGLE SHEET FETCH
-// ════════════════════════════════════════
-const SHEET_ID = "1--DzB0hQ0dbVuhca3PNNr9JpMX2oLtmEi6PzYokWwXA";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
-
-async function loadSheetData() {
-  document.getElementById('loading-overlay').style.display = 'flex';
-  try {
-    const res = await fetch(SHEET_URL);
-    const csv = await res.text();
-    DATA = parseCSV(csv);
-    buildTree();
-    renderTable();
-  } catch(e) {
-    document.getElementById('loading-overlay').innerHTML = '<div style="text-align:center"><div style="font-size:18px;font-weight:600;color:#e02424">데이터 로드 실패</div><div style="margin-top:8px;color:#5a5f6e">구글 시트 공유 설정을 확인해주세요</div><button onclick="loadSheetData()" style="margin-top:16px;padding:8px 20px;background:#1a56db;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px">다시 시도</button></div>';
-  } finally {
-    document.getElementById('loading-overlay').style.display = 'none';
-  }
-}
-
-function parseCSV(csv) {
-  const lines = csv.split('\n').map(l => l.trim()).filter(l => l);
-  const headers = parseCSVRow(lines[0]);
-  const result = {};
-
-  for (let i = 1; i < lines.length; i++) {
-    const cols = parseCSVRow(lines[i]);
-    if (cols.length < 3) continue;
-
-    const cat    = cols[0]  || '';
-    const brand  = cols[1]  || '';
-    const model  = cols[2]  || '';
-    const price  = cols[3]  || '문의';
-    const keys   = cols[4]  || '';   // 건반수
-    const ktype  = cols[5]  || '';   // 건반타입
-    const at     = cols[6]  || '-';  // 애프터터치
-    const poly   = cols[7]  || '';   // 동시발음
-    const engine = cols[8]  || '';   // 음원엔진
-    const weight = cols[9]  || '';   // 무게
-    const feats  = [cols[10],cols[11],cols[12],cols[13],cols[14]].filter(f => f && f.trim());
-
-    if (!cat || !brand || !model) continue;
-
-    if (!result[cat]) result[cat] = {};
-    if (!result[cat][brand]) result[cat][brand] = {};
-
-    // 스펙 구성 (카테고리별 분기)
-    const specs = {};
-    if (cat === '전자드럼') {
-      if (poly)   specs['모듈'] = { '음색': poly };
-      if (weight) specs['외형'] = { '무게': weight };
-    } else {
-      if (keys || ktype || at) {
-        specs['건반'] = {};
-        if (keys)   specs['건반']['건반 수'] = keys + '건반';
-        if (ktype)  specs['건반']['건반 타입'] = ktype;
-        if (at)     specs['건반']['애프터터치'] = at;
-      }
-      if (poly || engine) {
-        specs['음원'] = {};
-        if (poly)   specs['음원']['동시발음수'] = poly;
-        if (engine) specs['음원']['음원 엔진'] = engine;
-      }
-      if (weight) {
-        specs['외형'] = { '무게': weight };
-      }
-    }
-
-    // 가격 표시 처리
-    const priceNum = parseInt((price || '').replace(/[^0-9]/g, ''));
-    const priceStr = !isNaN(priceNum) && priceNum > 0
-      ? priceNum.toLocaleString('ko-KR') + '원'
-      : (price === '문의' ? '별도 문의' : price || '별도 문의');
-
-    result[cat][brand][model] = {
-      price: priceStr,
-      specs: specs,
-      features: feats
-    };
-  }
-  return result;
-}
-
-function parseCSVRow(row) {
-  const result = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < row.length; i++) {
-    const c = row[i];
-    if (c === '"') {
-      if (inQ && row[i+1] === '"') { cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if (c === ',' && !inQ) {
-      result.push(cur.trim());
-      cur = '';
-    } else {
-      cur += c;
-    }
-  }
-  result.push(cur.trim());
-  return result;
-}
-
-
-
-
-// ════════════════════════════════════════
-//  STATE
-// ════════════════════════════════════════
-let selected = new Set();
-let autoCompare = true;
-let showFeatures = false;
-
-// ════════════════════════════════════════
-//  BUILD TREE
-// ════════════════════════════════════════
-function buildTree() {
-  const tree = document.getElementById('tree');
-  tree.innerHTML = '';
-  for (const [cat, brands] of Object.entries(DATA)) {
-    const catEl = document.createElement('div');
-    catEl.innerHTML = `
-      <div class="cat-header" onclick="toggleSection(this)">
-        <span class="cat-dot"></span>
-        <span>${cat}</span>
-        <svg class="cat-arrow open" width="10" height="10" viewBox="0 0 10 10"><path d="M3 2l4 3-4 3" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
-      </div>
-      <div class="cat-body">
-        ${Object.entries(brands).map(([brand, models]) => `
-          <div>
-            <div class="brand-header" onclick="toggleSection(this)">
-              <span>${brand}</span>
-              <svg class="brand-arrow open" width="9" height="9" viewBox="0 0 10 10"><path d="M3 2l4 3-4 3" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
-            </div>
-            <div class="model-list">
-              ${Object.entries(models).map(([model, data]) => `
-                <div class="model-item" data-model="${model}" data-cat="${cat}" data-brand="${brand}">
-                  <input type="checkbox" id="cb-${model}" onchange="onCheck('${cat}','${brand}','${model}',this.checked)">
-                  <label class="model-name" for="cb-${model}">${model}</label>
-                  <span class="model-price">${data.price.replace('원','').replace('약 ','~').replace(',000,000','M').replace(',000','K')}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-    tree.appendChild(catEl);
-  }
-}
-
-function toggleSection(el) {
-  const arrow = el.querySelector('.cat-arrow, .brand-arrow');
-  const next = el.nextElementSibling;
-  if (!next) return;
-  const isOpen = arrow.classList.contains('open');
-  if (isOpen) {
-    next.style.maxHeight = next.scrollHeight + 'px';
-    next.style.overflow = 'hidden';
-    requestAnimationFrame(() => next.style.maxHeight = '0');
-    arrow.classList.remove('open');
-  } else {
-    next.style.overflow = '';
-    next.style.maxHeight = next.scrollHeight + 'px';
-    setTimeout(() => next.style.maxHeight = '', 300);
-    arrow.classList.add('open');
-  }
-}
-
-function filterModels(q) {
-  q = q.toLowerCase();
-  document.querySelectorAll('.model-item').forEach(el => {
-    const name = el.dataset.model.toLowerCase();
-    const brand = el.dataset.brand.toLowerCase();
-    el.style.display = (!q || name.includes(q) || brand.includes(q)) ? '' : 'none';
-  });
-}
-
-// ════════════════════════════════════════
-//  SELECTION
-// ════════════════════════════════════════
-function onCheck(cat, brand, model, checked) {
-  const key = `${cat}|${brand}|${model}`;
-  if (checked) {
-    if (selected.size >= 6) { alert('최대 6개까지 선택 가능합니다.'); document.getElementById(`cb-${model}`).checked = false; return; }
-    selected.add(key);
-  } else { selected.delete(key); }
-  document.querySelectorAll('.model-item').forEach(el => {
-    el.classList.toggle('checked', el.querySelector('input')?.checked);
-  });
-  updateCount();
-  renderTable();
-}
-
-function clearAll() {
-  selected.clear();
-  document.querySelectorAll('.model-item input').forEach(cb => cb.checked = false);
-  document.querySelectorAll('.model-item').forEach(el => el.classList.remove('checked'));
-  updateCount();
-  renderTable();
-}
-
-function updateCount() {
-  document.getElementById('selected-count').textContent = `${selected.size}개 선택`;
-}
-
-// ════════════════════════════════════════
-//  RENDER
-// ════════════════════════════════════════
-function renderTable() {
-  const headerRow = document.getElementById('header-row');
-  const tbody = document.getElementById('table-body');
-  const emptyState = document.getElementById('empty-state');
-  const summaryRow = document.getElementById('summary-row');
-  const autoPanel = document.getElementById('auto-panel');
-  const compareLabel = document.getElementById('compare-label');
-
-  if (selected.size === 0) {
-    headerRow.innerHTML = '';
-    tbody.innerHTML = '';
-    emptyState.style.display = '';
-    summaryRow.style.display = 'none';
-    autoPanel.style.display = 'none';
-    compareLabel.textContent = '';
+async function loadSheetData(){
+  const lo=document.getElementById('lo');
+  lo.style.display='flex';
+  try{
+    const results=await Promise.all(SHEETS.map(async sh=>{
+      const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sh)}`;
+      const r=await fetch(url);
+      return[sh,await r.text()];
+    }));
+    results.forEach(([sh,csv])=>{
+      const{models,headers}=parseSheet(sh,csv);
+      DATA[sh]=models;
+      RAW_HDR[sh]=headers;
+    });
+    buildCatCards();buildTree();buildBrandSel();buildReco();renderTable();
+  }catch(e){
+    lo.innerHTML=`<div style="text-align:center"><div style="font-size:17px;font-weight:600;color:#e02424">데이터 로드 실패</div><div style="margin-top:7px;color:#5a5f6e">구글 시트 공유 설정을 확인해주세요</div><button onclick="location.reload()" style="margin-top:14px;padding:7px 18px;background:#1a56db;color:#fff;border:none;border-radius:6px;cursor:pointer">다시 시도</button></div>`;
     return;
   }
+  lo.style.display='none';
+}
 
-  emptyState.style.display = 'none';
+function parseSheet(cat,csv){
+  const lines=csv.split('\n').map(l=>l.trim()).filter(l=>l);
+  if(!lines.length)return{models:{},headers:[]};
+  const headers=parseRow(lines[0]);
+  const models={};
+  for(let i=1;i<lines.length;i++){
+    const c=parseRow(lines[i]);
+    if(!c[0]&&!c[1])continue;
+    const brand=c[0]||'',model=c[1]||'',price=c[2]||'';
+    if(!brand||!model)continue;
+    if(!models[brand])models[brand]={};
+    const pn=parseInt((price||'').replace(/[^0-9]/g,''));
+    const ps=!isNaN(pn)&&pn>0?pn.toLocaleString('ko-KR')+'원':(price.includes('문의')?'별도 문의':price||'별도 문의');
+    const specs=buildSpecs(cat,headers,c);
+    const feats=[];
+    headers.forEach((h,idx)=>{if(h.startsWith('특징')&&c[idx])feats.push(c[idx]);});
+    const score=calcScore(cat,headers,c);
+    models[brand][model]={price:ps,priceNum:(!isNaN(pn)&&pn>0)?pn:0,specs,features:feats,score,brand,cat};
+  }
+  return{models,headers};
+}
 
-  const models = [...selected].map(key => {
-    const [cat, brand, model] = key.split('|');
-    return { key, cat, brand, model, data: DATA[cat][brand][model] };
+const SM={
+  '신디사이저':{건반:['건반수','건반타입','건반재질','애프터터치'],음원:['동시발음','음원엔진','FlashPlay','사운드메모리','팩토리프로그램','멀티/퍼포먼스'],'편집/기능':['존수','아르페지에이터','CC시퀀서','이펙터'],연결:['MIDI단자','USB Audio','오디오출력','오디오입력','디스플레이'],외형:['무게','색상']},
+  '디지털피아노':{건반:['건반수','건반타입','건반재질','에스케이프먼트','터치감도'],음원:['동시발음','사운드라이브러리','팩토리음색','현댐퍼공명'],기능:['연주모드','메트로놈','레코더','자동반주','디스플레이'],음향:['앰프출력','스피커수'],연결:['블루투스','USB','헤드폰단자','아날로그입력','아날로그출력','페달입력'],외형:['무게','폼팩터','색상']},
+  '전자드럼':{모듈:['음색수','프리셋킷수','유저킷수','훈련기능'],스네어:['스네어패드','스네어인치','스네어존수','림샷','크로스스틱'],탐:['탐패드','탐인치','탐존수'],킥:['킥패드','킥인치'],하이햇:['하이햇패드','하이햇센서','하이햇오픈/클로즈','하프오픈','초크(HH)'],크래쉬:['크래쉬패드','크래쉬존수','초크(크래쉬)'],라이드:['라이드패드','라이드존수(보우/엣지/벨)','초크(라이드)'],연결:['AUX IN','헤드폰','USB MIDI','USB Audio','블루투스']}
+};
+
+function buildSpecs(cat,headers,cols){
+  const SKIP=new Set(['브랜드','모델','가격','특징1','특징2','특징3','특징4','특징5']);
+  const specs={};const used=new Set();
+  const sm=SM[cat]||{};
+  Object.entries(sm).forEach(([sec,keys])=>{
+    const sd={};
+    keys.forEach(k=>{const idx=headers.indexOf(k);if(idx>=0&&cols[idx]&&cols[idx]!=''){sd[k]=cols[idx];used.add(k);}});
+    if(Object.keys(sd).length)specs[sec]=sd;
   });
+  const ex={};
+  headers.forEach((h,idx)=>{if(!SKIP.has(h)&&!used.has(h)&&cols[idx]&&cols[idx]!='')ex[h]=cols[idx];});
+  if(Object.keys(ex).length)specs['기타']=ex;
+  return specs;
+}
 
-  compareLabel.textContent = `  ${models.length}개 모델`;
+function calcScore(cat,headers,cols){
+  const g=k=>{const i=headers.indexOf(k);return i>=0?(cols[i]||''):'';}
+  let s=0;
+  if(cat==='디지털피아노'){
+    const kt=g('건반타입').toLowerCase();
+    if(kt.includes('천연목')||kt.includes('nw-gh')||kt.includes('w1 ivory gt'))s+=40;
+    else if(kt.includes('목건반')||kt.includes('gh3x')||kt.includes('lk-b100')||kt.includes('lk-m400'))s+=30;
+    else if(kt.includes('pha-4 premium')||kt.includes('gh3 '))s+=22;
+    else if(kt.includes('pha-4')||kt.includes('ghs')||kt.includes('h1 ivory')||kt.includes('gh3'))s+=14;
+    else s+=6;
+    if(g('에스케이프먼트')==='O')s+=10;
+    const p=parseInt(g('동시발음'));if(!isNaN(p))s+=Math.min(20,Math.round(p/256*20));
+    if(g('현댐퍼공명').includes('O')||g('현댐퍼공명').toLowerCase().includes('vrm'))s+=15;
+    const a=parseInt(g('앰프출력'));if(!isNaN(a))s+=Math.min(15,Math.round(a/200*15));
+    const bt=g('블루투스');if(bt.includes('Audio+MIDI')||bt.includes('BT 5'))s+=10;else if(bt.includes('Audio')||bt.includes('BT'))s+=6;
+  }else if(cat==='신디사이저'){
+    const eng=g('음원엔진').toLowerCase();
+    if(eng.includes('awm2')&&eng.includes('fm-x')&&eng.includes('an-x'))s+=35;
+    else if(eng.includes('dynamic v.a.s.t')||eng.includes('nord piano library v6'))s+=28;
+    else if(eng.includes('v.a.s.t')||eng.includes('a.t.s.t')||eng.includes('awm2'))s+=20;
+    else s+=10;
+    const p=parseInt(g('동시발음').replace(/[^0-9]/g,''));if(!isNaN(p))s+=Math.min(20,Math.round(p/256*20));
+    const z=parseInt(g('존수'));if(!isNaN(z))s+=Math.min(20,Math.round(z/16*20));
+    const usb=g('USB Audio');if(usb==='O'||usb.startsWith('O'))s+=15;
+    const at=g('애프터터치');if(at.includes('폴리포닉'))s+=10;else if(at.includes('채널')||at==='O')s+=6;
+  }else if(cat==='전자드럼'){
+    const sn=parseInt(g('스네어존수'));if(!isNaN(sn))s+=Math.round(sn/3*30);
+    const rd=g('라이드존수(보우/엣지/벨)');if(rd.includes('3존')||rd.includes('벨'))s+=25;else if(rd.includes('2존'))s+=15;else if(rd.includes('1존')||rd==='O')s+=5;
+    if(g('초크(크래쉬)')==='O')s+=25;
+    if(g('하프오픈')==='O')s+=20;
+  }
+  return Math.min(100,Math.round(s));
+}
 
-  // Summary
-  summaryRow.style.display = 'flex';
-  summaryRow.innerHTML = `
-    <div class="summary-card"><div class="summary-label">비교 모델</div><div class="summary-value">${models.length}</div><div class="summary-desc">선택됨 / 최대 6</div></div>
-    <div class="summary-card"><div class="summary-label">브랜드</div><div class="summary-value">${new Set(models.map(m=>m.brand)).size}</div><div class="summary-desc">브랜드</div></div>
-    <div class="summary-card"><div class="summary-label">가격 범위</div><div class="summary-value" style="font-size:14px">${getPriceRange(models)}</div><div class="summary-desc">시장 참고가</div></div>
-  `;
+function parseRow(row){
+  const r=[];let cur='',inQ=false;
+  for(let i=0;i<row.length;i++){
+    const c=row[i];
+    if(c==='"'){if(inQ&&row[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(c===','&&!inQ){r.push(cur.trim());cur='';}
+    else cur+=c;
+  }
+  r.push(cur.trim());return r;
+}
 
-  // Collect section/row keys
-  const sectionKeys = [];
-  models.forEach(m => Object.keys(m.data.specs).forEach(s => { if (!sectionKeys.includes(s)) sectionKeys.push(s); }));
+function buildCatCards(){
+  document.getElementById('cat-cards').innerHTML=Object.entries(CAT_INFO).map(([cat,info])=>{
+    const mc=DATA[cat]?Object.values(DATA[cat]).reduce((s,b)=>s+Object.keys(b).length,0):0;
+    const bc=DATA[cat]?Object.keys(DATA[cat]).length:0;
+    return`<div class="cat-card ${info.cls}" onclick="highlightCat('${cat}')"><div class="ci">${info.icon}</div><div><div class="cc-name">${cat}</div><div class="cc-cnt">${mc}개 모델 · ${bc}개 브랜드</div></div></div>`;
+  }).join('');
+}
 
-  // Numeric analysis for highlight
-  const numericRows = {};
-  sectionKeys.forEach(sec => {
-    const rowKeys = [];
-    models.forEach(m => { if (m.data.specs[sec]) Object.keys(m.data.specs[sec]).forEach(r => { if (!rowKeys.includes(r)) rowKeys.push(r); }); });
-    rowKeys.forEach(row => {
-      const vals = models.map(m => {
-        const v = m.data.specs[sec]?.[row] || '';
-        const n = parseInt(v.replace(/[^0-9]/g,''));
-        return isNaN(n) ? null : n;
+function highlightCat(cat){
+  document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+function buildTree(){
+  const tree=document.getElementById('tree');
+  tree.innerHTML='';
+  Object.entries(DATA).forEach(([cat,brands])=>{
+    const info=CAT_INFO[cat]||{cls:'dp'};
+    const el=document.createElement('div');
+    el.innerHTML=`
+      <div class="cat-hd" onclick="toggleSec(this)">
+        <span class="cat-pill ${info.cls}">${cat}</span>
+        <span class="ca open">▶</span>
+      </div>
+      <div class="cat-body">
+        ${Object.entries(brands).map(([brand,models])=>`
+          <div>
+            <div class="br-hd" onclick="toggleSec(this)">
+              <span>${brand}</span><span style="font-size:10px;color:var(--text3);margin-left:4px">${Object.keys(models).length}</span>
+              <span class="ba open">▶</span>
+            </div>
+            <div class="ml">
+              ${Object.keys(models).map(m=>`
+                <div class="mi" data-model="${m}" data-cat="${cat}" data-brand="${brand}">
+                  <input type="checkbox" id="cb-${cat}-${brand}-${m}" onchange="onCheck('${cat}','${brand}','${m}',this.checked)">
+                  <label class="mn" for="cb-${cat}-${brand}-${m}">${m}</label>
+                </div>`).join('')}
+            </div>
+          </div>`).join('')}
+      </div>`;
+    tree.appendChild(el);
+  });
+}
+
+function toggleSec(el){
+  const arrow=el.querySelector('.ca,.ba');
+  const next=el.nextElementSibling;
+  if(!next||!arrow)return;
+  const open=arrow.classList.contains('open');
+  if(open){next.style.maxHeight=next.scrollHeight+'px';next.style.overflow='hidden';requestAnimationFrame(()=>next.style.maxHeight='0');arrow.classList.remove('open');}
+  else{next.style.overflow='';next.style.maxHeight=next.scrollHeight+'px';setTimeout(()=>next.style.maxHeight='',300);arrow.classList.add('open');}
+}
+
+function filterModels(q){
+  q=q.toLowerCase();
+  document.querySelectorAll('.mi').forEach(el=>{
+    el.style.display=(!q||el.dataset.model.toLowerCase().includes(q)||el.dataset.brand.toLowerCase().includes(q))?'':'none';
+  });
+}
+
+function switchTab(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='lineup')renderLineup();
+  if(name==='rival')renderRival();
+}
+
+/* FILTER */
+const PR={'u50':[0,500000],'50to100':[500000,1000000],'100to200':[1000000,2000000],'o200':[2000000,Infinity]};
+const TG={
+  child:m=>m.priceNum<600000||(m.features||[]).some(f=>f.includes('입문')||f.includes('교육')||f.includes('경량')),
+  church:m=>(m.features||[]).some(f=>f.includes('드로우바')||f.includes('오르간')),
+  hobby:m=>m.priceNum>0&&m.priceNum<1500000,
+  stage:m=>(m.features||[]).some(f=>f.includes('무대')||f.includes('공연')||f.includes('스테이지')),
+  studio:m=>(m.features||[]).some(f=>f.includes('USB Audio')||f.includes('DAW')||f.includes('홈스튜디오'))
+};
+
+function toggleFilter(el,type,val){
+  if(activeF[type]===val){activeF[type]=null;el.classList.remove('on');}
+  else{document.querySelectorAll('.fc').forEach(c=>{if(c.getAttribute('onclick')?.includes(`'${type}'`))c.classList.remove('on');});activeF[type]=val;el.classList.add('on');}
+  applyFilter();
+}
+
+function applyFilter(){
+  if(!activeF.price&&!activeF.target){document.getElementById('filter-results').innerHTML='<span style="color:var(--text3)">필터를 선택하면 모델이 표시됩니다.</span>';return;}
+  const res=[];
+  Object.entries(DATA).forEach(([cat,brands])=>{
+    Object.entries(brands).forEach(([brand,models])=>{
+      Object.entries(models).forEach(([model,data])=>{
+        let pass=true;
+        if(activeF.price){const[mn,mx]=PR[activeF.price];if(data.priceNum===0||data.priceNum<mn||data.priceNum>=mx)pass=false;}
+        if(activeF.target&&pass){const fn=TG[activeF.target];if(fn&&!fn(data))pass=false;}
+        if(pass)res.push({cat,brand,model,data});
       });
-      if (vals.some(v => v !== null)) numericRows[sec+'|'+row] = vals;
     });
   });
+  const el=document.getElementById('filter-results');
+  if(!res.length){el.innerHTML='<span style="color:var(--text3)">해당 조건의 모델이 없습니다.</span>';return;}
+  el.innerHTML=`<div style="margin-bottom:8px;font-size:12px;color:var(--text3)">${res.length}개 모델</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      ${res.map(r=>{
+        const info=CAT_INFO[r.cat]||{cls:'dp',color:'#1a56db'};
+        return`<div style="padding:5px 11px;border:1px solid var(--border);border-radius:var(--rs);background:var(--bg);font-size:12px;cursor:pointer" onclick="selAndCmp('${r.cat}','${r.brand}','${r.model}')">
+          <span class="cat-pill ${info.cls}" style="font-size:9px;padding:1px 5px;margin-right:4px">${r.cat}</span>
+          <b>${r.brand}</b> ${r.model}
+          <span style="color:var(--accent);margin-left:5px;font-size:11px">${r.data.price}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
 
-  // Auto compare summary
-  if (autoCompare && models.length > 1) {
-    const items = [];
-    [['동시발음수', false], ['앰프 출력', false], ['무게', true]].forEach(([rowKey, lowerBetter]) => {
-      sectionKeys.forEach(sec => {
-        const nk = sec+'|'+rowKey;
-        if (numericRows[nk]) {
-          const vals = numericRows[nk];
-          const targetVal = lowerBetter ? Math.min(...vals.filter(v=>v!==null)) : Math.max(...vals.filter(v=>v!==null));
-          const idx = vals.indexOf(targetVal);
-          if (idx >= 0 && new Set(vals.filter(v=>v!==null)).size > 1) {
-            items.push({ label: rowKey + (lowerBetter ? ' 가장 가벼움' : ' 우위'), winner: models[idx].model });
-          }
-        }
-      });
+function selAndCmp(cat,brand,model){
+  const key=`${cat}|${brand}|${model}`;
+  if(!selected.has(key)){if(selected.size>=6){alert('최대 6개');return;}selected.add(key);const cb=document.getElementById(`cb-${cat}-${brand}-${model}`);if(cb){cb.checked=true;cb.closest('.mi')?.classList.add('checked');}}
+  updateCount();switchTab('compare');renderTable();
+}
+
+/* RECO */
+const RECO=[
+  {tag:'dp',label:'어린이/입문',name:'KaS1 or P-145',desc:'50만 이하 · 경량 · 간단 조작 · 가정 학습용'},
+  {tag:'sy',label:'교회/찬양팀',name:'Nord Electro 6 or CK88',desc:'오르간+피아노 · 드로우바 · 내장 스피커'},
+  {tag:'sy',label:'홈스튜디오',name:'MODX M6 or K2700',desc:'USB Audio · DAW 연동 · 다채로운 음원'},
+  {tag:'dp',label:'무대/공연',name:'Nord Stage 4 73',desc:'4레이어 · 드로우바 · Triple Sensor · 경량'},
+  {tag:'dp',label:'중급 가정용',name:'CLP-825 or KaP1W',desc:'목건반 · 현댐퍼 공명 · BT Audio+MIDI'},
+  {tag:'dr',label:'드럼 입문',name:'DTX452K or KED-STARTER',desc:'메쉬 스네어 · 훈련기능 · 조용한 연습'},
+  {tag:'dr',label:'드럼 중급',name:'DTX6K2X or X5',desc:'풀메쉬 · 림샷 · 3존 라이드 · 초크'},
+  {tag:'sy',label:'플래그십',name:'MONTAGE M8X',desc:'폴리포닉 AT · 3엔진 · Super Knob'}
+];
+function buildReco(){
+  document.getElementById('reco-grid').innerHTML=RECO.map(r=>`<div class="rc"><div class="rt ${r.tag}">${r.label}</div><div class="rn">${r.name}</div><div class="rd">${r.desc}</div></div>`).join('');
+}
+
+/* LINEUP CHART */
+function buildBrandSel(){
+  const sel=document.getElementById('lu-brand');
+  const brands=new Set();Object.values(DATA).forEach(bs=>Object.keys(bs).forEach(b=>brands.add(b)));
+  sel.innerHTML='<option value="">선택</option>'+[...brands].sort().map(b=>`<option value="${b}">${b}</option>`).join('');
+}
+
+function destroyC(c){if(c){c.destroy();return null;}return null;}
+
+function renderLineup(){
+  const brand=document.getElementById('lu-brand').value;
+  const cat=document.getElementById('lu-cat').value;
+  document.getElementById('lu-legend').innerHTML='';
+  luBarC=destroyC(luBarC);luBubC=destroyC(luBubC);
+  if(!brand||!cat||!DATA[cat]||!DATA[cat][brand])return;
+  const models=DATA[cat][brand];
+  const entries=Object.entries(models).filter(([,d])=>d.priceNum>0).sort((a,b)=>a[1].priceNum-b[1].priceNum);
+  if(!entries.length)return;
+  const labels=entries.map(([m])=>m);
+  const prices=entries.map(([,d])=>Math.round(d.priceNum/10000));
+  const scores=entries.map(([,d])=>d.score);
+  const avg=Math.round(prices.reduce((s,v)=>s+v,0)/prices.length);
+  const color=(CAT_INFO[cat]||{color:'#1a56db'}).color;
+
+  luBarC=new Chart(document.getElementById('lu-bar').getContext('2d'),{
+    type:'bar',
+    data:{labels,datasets:[
+      {label:'가격(만원)',data:prices,backgroundColor:color+'33',borderColor:color,borderWidth:1.5,borderRadius:4},
+      {label:'평균가',data:labels.map(()=>avg),type:'line',borderColor:'#e02424',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.datasetIndex===0?`${ctx.parsed.y}만원`:`평균 ${ctx.parsed.y}만원`}}},
+      scales:{x:{ticks:{font:{size:11},maxRotation:30},grid:{display:false}},y:{ticks:{callback:v=>v+'만',font:{size:11}},grid:{color:'#e2e4e8'}}}}
+  });
+
+  document.getElementById('lu-legend').innerHTML=`
+    <span class="li"><span class="ls" style="background:${color}"></span>가격 (만원)</span>
+    <span class="li"><span style="width:16px;height:0;border-top:2px dashed #e02424;display:inline-block"></span>평균 ${avg}만원</span>`;
+
+  luBubC=new Chart(document.getElementById('lu-bubble').getContext('2d'),{
+    type:'bubble',
+    data:{datasets:[{label:brand,data:entries.map(([m,d])=>({x:Math.round(d.priceNum/10000),y:d.score,r:10,label:m})),backgroundColor:color+'55',borderColor:color,borderWidth:1.5}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return[d.label,`가격: ${d.x}만원`,`스펙점수: ${d.y}점`];}}}},
+      scales:{x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만',font:{size:10}},min:0},
+              y:{title:{display:true,text:'스펙점수',font:{size:11}},min:0,max:100,ticks:{font:{size:10}}}}}
+  });
+}
+
+/* RIVAL CHART */
+function updateRivalBrands(){
+  const cat=document.getElementById('rv-cat').value;
+  rvBrands.clear();
+  document.getElementById('rv-brands').innerHTML='';
+  document.getElementById('rv-bar-legend').innerHTML='';
+  document.getElementById('rv-bubble-legend').innerHTML='';
+  rvBarC=destroyC(rvBarC);rvBubC=destroyC(rvBubC);
+  if(!cat||!DATA[cat])return;
+  document.getElementById('rv-brands').innerHTML=Object.keys(DATA[cat]).map(b=>`<span class="fc" onclick="toggleRvBrand(this,'${b}')">${b}</span>`).join('');
+}
+
+function toggleRvBrand(el,brand){
+  if(rvBrands.has(brand)){rvBrands.delete(brand);el.classList.remove('on');}
+  else{rvBrands.add(brand);el.classList.add('on');}
+  renderRival();
+}
+
+function renderRival(){
+  const cat=document.getElementById('rv-cat').value;
+  rvBarC=destroyC(rvBarC);rvBubC=destroyC(rvBubC);
+  document.getElementById('rv-bar-legend').innerHTML='';
+  document.getElementById('rv-bubble-legend').innerHTML='';
+  if(!cat||rvBrands.size===0)return;
+  const brandArr=[...rvBrands];
+  const allE=[];
+  brandArr.forEach((brand,bi)=>{
+    const models=DATA[cat]?.[brand]||{};
+    Object.entries(models).filter(([,d])=>d.priceNum>0).sort((a,b)=>a[1].priceNum-b[1].priceNum)
+      .forEach(([model,data])=>allE.push({brand,model,data,bi}));
+  });
+  if(!allE.length)return;
+
+  const allPrices=allE.map(e=>Math.round(e.data.priceNum/10000));
+  const avg=Math.round(allPrices.reduce((s,v)=>s+v,0)/allPrices.length);
+
+  rvBarC=new Chart(document.getElementById('rv-bar').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:allE.map(e=>e.model),
+      datasets:[
+        ...brandArr.map((brand,bi)=>({
+          label:brand,
+          data:allE.map(e=>e.brand===brand?Math.round(e.data.priceNum/10000):null),
+          backgroundColor:BCOLS[bi%BCOLS.length]+'55',borderColor:BCOLS[bi%BCOLS.length],borderWidth:1.5,borderRadius:4,skipNull:true
+        })),
+        {label:'카테고리 평균',data:allE.map(()=>avg),type:'line',borderColor:'#e02424',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.type==='line'?`평균 ${ctx.parsed.y}만원`:`${ctx.parsed.y}만원`}}},
+      scales:{x:{ticks:{font:{size:10},maxRotation:40},grid:{display:false}},y:{ticks:{callback:v=>v+'만',font:{size:11}},grid:{color:'#e2e4e8'}}}}
+  });
+
+  document.getElementById('rv-bar-legend').innerHTML=
+    brandArr.map((b,bi)=>`<span class="li"><span class="ls" style="background:${BCOLS[bi%BCOLS.length]}"></span>${b}</span>`).join('')+
+    `<span class="li"><span style="width:16px;height:0;border-top:2px dashed #e02424;display:inline-block"></span>평균 ${avg}만원</span>`;
+
+  rvBubC=new Chart(document.getElementById('rv-bubble').getContext('2d'),{
+    type:'bubble',
+    data:{datasets:brandArr.map((brand,bi)=>({
+      label:brand,
+      data:allE.filter(e=>e.brand===brand).map(e=>({x:Math.round(e.data.priceNum/10000),y:e.data.score,r:10,label:e.model})),
+      backgroundColor:BCOLS[bi%BCOLS.length]+'55',borderColor:BCOLS[bi%BCOLS.length],borderWidth:1.5
+    }))},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return[`${ctx.dataset.label} ${d.label}`,`가격: ${d.x}만원`,`스펙점수: ${d.y}점`];}}}},
+      scales:{x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만',font:{size:10}},min:0},
+              y:{title:{display:true,text:'스펙점수',font:{size:11}},min:0,max:100,ticks:{font:{size:10}}}}}
+  });
+
+  document.getElementById('rv-bubble-legend').innerHTML=
+    brandArr.map((b,bi)=>`<span class="li"><span class="lsc" style="background:${BCOLS[bi%BCOLS.length]}"></span>${b}</span>`).join('');
+}
+
+/* SELECTION */
+function onCheck(cat,brand,model,checked){
+  const key=`${cat}|${brand}|${model}`;
+  if(checked){if(selected.size>=6){alert('최대 6개');document.getElementById(`cb-${cat}-${brand}-${model}`).checked=false;return;}selected.add(key);}
+  else selected.delete(key);
+  document.querySelectorAll('.mi').forEach(el=>el.classList.toggle('checked',el.querySelector('input')?.checked));
+  updateCount();renderTable();
+}
+function clearAll(){selected.clear();document.querySelectorAll('.mi input').forEach(cb=>cb.checked=false);document.querySelectorAll('.mi').forEach(el=>el.classList.remove('checked'));updateCount();renderTable();}
+function updateCount(){document.getElementById('sel-count').textContent=`${selected.size}개 선택`;}
+function removeModel(key){selected.delete(key);const[cat,brand,model]=key.split('|');const cb=document.getElementById(`cb-${cat}-${brand}-${model}`);if(cb){cb.checked=false;cb.closest('.mi')?.classList.remove('checked');}updateCount();renderTable();}
+
+/* RENDER TABLE */
+function renderTable(){
+  const hdr=document.getElementById('hdr-row'),tbody=document.getElementById('tbl-body');
+  const empty=document.getElementById('empty'),sumRow=document.getElementById('sum-row'),ap=document.getElementById('auto-panel'),cl=document.getElementById('cmp-label');
+  if(selected.size===0){hdr.innerHTML='';tbody.innerHTML='';empty.style.display='';sumRow.style.display='none';ap.style.display='none';cl.textContent='';return;}
+  empty.style.display='none';
+  const models=[...selected].map(key=>{const[cat,brand,model]=key.split('|');return{key,cat,brand,model,data:DATA[cat]?.[brand]?.[model]};}).filter(m=>m.data);
+  cl.textContent=`  ${models.length}개 모델`;
+  const prices=models.map(m=>m.data.priceNum).filter(p=>p>0);
+  const pr=prices.length?`${(Math.min(...prices)/10000).toFixed(0)}만 ~ ${(Math.max(...prices)/10000).toFixed(0)}만`:'-';
+  sumRow.style.display='flex';
+  sumRow.innerHTML=`<div class="sc"><div class="sl">비교 모델</div><div class="sv">${models.length}</div><div class="sd">선택됨 / 최대 6</div></div>
+    <div class="sc"><div class="sl">브랜드</div><div class="sv">${new Set(models.map(m=>m.brand)).size}</div><div class="sd">브랜드</div></div>
+    <div class="sc"><div class="sl">가격 범위</div><div class="sv" style="font-size:13px">${pr}</div><div class="sd">시장 참고가</div></div>`;
+
+  const secKeys=[];models.forEach(m=>Object.keys(m.data.specs||{}).forEach(s=>{if(!secKeys.includes(s))secKeys.push(s);}));
+  const numRows={};
+  secKeys.forEach(sec=>{
+    const rks=[];models.forEach(m=>{if(m.data.specs[sec])Object.keys(m.data.specs[sec]).forEach(r=>{if(!rks.includes(r))rks.push(r);});});
+    rks.forEach(row=>{const vals=models.map(m=>{const v=m.data.specs[sec]?.[row]||'';const n=parseInt(v.replace(/[^0-9]/g,''));return isNaN(n)?null:n;});if(vals.some(v=>v!==null))numRows[sec+'|'+row]=vals;});
+  });
+
+  if(autoComp&&models.length>1){
+    const items=[];
+    [['동시발음',false],['앰프출력',false],['무게',true]].forEach(([rk,lb])=>{
+      secKeys.forEach(sec=>{const nk=sec+'|'+rk;if(numRows[nk]){const vals=numRows[nk];const tgt=lb?Math.min(...vals.filter(v=>v!==null)):Math.max(...vals.filter(v=>v!==null));const idx=vals.indexOf(tgt);if(idx>=0&&new Set(vals.filter(v=>v!==null)).size>1)items.push({label:rk+(lb?' 최경량':' 우위'),winner:models[idx].model});}});
     });
-    if (items.length) {
-      autoPanel.style.display = '';
-      autoPanel.innerHTML = `<div class="auto-panel-title">자동 비교 요약</div><div class="auto-chips">${items.map(i=>`<div class="auto-chip"><span class="label">${i.label}</span><span class="winner">${i.winner}</span></div>`).join('')}</div>`;
-    } else autoPanel.style.display = 'none';
-  } else autoPanel.style.display = 'none';
+    if(items.length){ap.style.display='';ap.innerHTML=`<div class="ap-t">자동 비교 요약</div><div class="acs">${items.map(i=>`<div class="ac"><span class="al">${i.label}</span><span class="aw">${i.winner}</span></div>`).join('')}</div>`;}
+    else ap.style.display='none';
+  }else ap.style.display='none';
 
-  // Header
-  headerRow.innerHTML = `
-    <th class="th-blank"></th>
-    ${models.map(m => `
-      <th class="th-model">
-        <div class="model-header">
-          <div class="mh-brand">${m.brand}</div>
-          <div class="mh-name">${m.model}</div>
-          <div class="mh-cat">${m.cat}</div>
-          <div class="mh-price">${m.data.price} <span class="mh-price-note">네이버 참고가</span></div>
-          <button class="model-remove" onclick="removeModel('${m.key}')">✕</button>
-        </div>
-      </th>
-    `).join('')}
-  `;
+  hdr.innerHTML=`<th class="th-blank"></th>${models.map(m=>{const info=CAT_INFO[m.cat]||{cls:'dp',color:'#1a56db'};return`<th class="th-model"><div class="mhd">
+    <div class="mh-brand">${m.brand}</div>
+    <span class="mh-cb" style="background:${info.color}22;color:${info.color}">${m.cat}</span>
+    <div class="mh-name">${m.model}</div>
+    <div class="mh-price">${m.data.price} <span class="mh-pn">참고가</span></div>
+    <button class="mr" onclick="removeModel('${m.key}')">✕</button>
+  </div></th>`;}).join('')}`;
 
-  // Body
-  let html = '';
-
-  if (showFeatures) {
-    html += `<tr class="tr-section"><td colspan="${models.length+1}">특장점</td></tr>`;
-    html += `<tr class="tr-data"><td class="td-label">주요 특장점</td>${models.map(m=>`<td class="td-value"><div class="feature-tags">${(m.data.features||[]).map((f,i)=>`<span class="ftag ${i%3===1?'g':i%3===2?'o':''}">${f}</span>`).join('')}</div></td>`).join('')}</tr>`;
+  let html='';
+  if(showFeat){
+    html+=`<tr class="tr-sec"><td colspan="${models.length+1}">특장점</td></tr>`;
+    html+=`<tr class="tr-d"><td class="tdl">주요 특장점</td>${models.map(m=>`<td class="tdv"><div class="ftags">${(m.data.features||[]).map((f,i)=>`<span class="ft ${i%3===1?'g':i%3===2?'o':''}">${f}</span>`).join('')}</div></td>`).join('')}</tr>`;
+    const scores=models.map(m=>m.data.score||0);const mx=Math.max(...scores),mn2=Math.min(...scores);
+    html+=`<tr class="tr-d"><td class="tdl">스펙 점수</td>${models.map(m=>{const s=m.data.score||0;const cls=mx!==mn2?(s===mx?'tdv best':s===mn2?'tdv worst':'tdv'):'tdv';return`<td class="${cls}">${s}점 / 100</td>`;}).join('')}</tr>`;
   }
 
-  sectionKeys.forEach(sec => {
-    html += `<tr class="tr-section"><td colspan="${models.length+1}">${sec}</td></tr>`;
-    const rowKeys = [];
-    models.forEach(m => { if (m.data.specs[sec]) Object.keys(m.data.specs[sec]).forEach(r => { if (!rowKeys.includes(r)) rowKeys.push(r); }); });
-    rowKeys.forEach(row => {
-      const vals = models.map(m => m.data.specs[sec]?.[row] || '-');
-      const nk = sec+'|'+row;
-      const numVals = autoCompare ? numericRows[nk] : null;
-      html += `<tr class="tr-data"><td class="td-label">${row}</td>${models.map((m,i) => {
-        let cls = 'td-value';
-        if (numVals && numVals[i] !== null) {
-          const maxV = Math.max(...numVals.filter(x=>x!==null));
-          const minV = Math.min(...numVals.filter(x=>x!==null));
-          if (maxV !== minV) {
-            const lowerBetter = row === '무게';
-            if (lowerBetter) { if (numVals[i] === minV) cls = 'td-value best'; else if (numVals[i] === maxV) cls = 'td-value worst'; }
-            else { if (numVals[i] === maxV) cls = 'td-value best'; else if (numVals[i] === minV) cls = 'td-value worst'; }
-          }
-        }
-        const v = vals[i];
-        if (v === '-') cls += ' na';
-        return `<td class="${cls}">${v === '-' ? '<span style="color:var(--text3)">—</span>' : v}</td>`;
+  secKeys.forEach(sec=>{
+    html+=`<tr class="tr-sec"><td colspan="${models.length+1}">${sec}</td></tr>`;
+    const rks=[];models.forEach(m=>{if(m.data.specs[sec])Object.keys(m.data.specs[sec]).forEach(r=>{if(!rks.includes(r))rks.push(r);});});
+    rks.forEach(row=>{
+      const vals=models.map(m=>m.data.specs[sec]?.[row]||'-');
+      const nk=sec+'|'+row;const nv=autoComp?numRows[nk]:null;
+      html+=`<tr class="tr-d"><td class="tdl">${row}</td>${models.map((m,i)=>{
+        let cls='tdv';
+        if(nv&&nv[i]!==null){const mx=Math.max(...nv.filter(x=>x!==null)),mn=Math.min(...nv.filter(x=>x!==null));if(mx!==mn){const lb=row.includes('무게');if(lb){if(nv[i]===mn)cls='tdv best';else if(nv[i]===mx)cls='tdv worst';}else{if(nv[i]===mx)cls='tdv best';else if(nv[i]===mn)cls='tdv worst';}}}
+        const v=vals[i];if(v==='-')cls+=' na';
+        return`<td class="${cls}">${v==='-'?'<span style="color:var(--text3)">—</span>':v}</td>`;
       }).join('')}</tr>`;
     });
   });
-
-  tbody.innerHTML = html;
+  tbody.innerHTML=html;
 }
 
-function removeModel(key) {
-  selected.delete(key);
-  const [,,model] = key.split('|');
-  const cb = document.getElementById(`cb-${model}`);
-  if (cb) { cb.checked = false; cb.closest('.model-item')?.classList.remove('checked'); }
-  updateCount();
-  renderTable();
-}
+function toggleAuto(){autoComp=!autoComp;document.getElementById('tog-auto').classList.toggle('on',autoComp);renderTable();}
+function toggleFeat(){showFeat=!showFeat;document.getElementById('tog-feat').classList.toggle('on',showFeat);renderTable();}
 
-function getPriceRange(models) {
-  const prices = models.map(m => {
-    const p = m.data.price.replace(/[^0-9]/g, '');
-    return parseInt(p) || 0;
-  }).filter(p => p > 0);
-  if (!prices.length) return '-';
-  const min = Math.min(...prices);
-  const max = Math.max(...prices);
-  const fmt = v => (v >= 1000000 ? (v/1000000).toFixed(0)+'M' : (v/10000).toFixed(0)+'만');
-  return min === max ? fmt(min) : `${fmt(min)} ~ ${fmt(max)}`;
-}
-
-function toggleAutoCompare() {
-  autoCompare = !autoCompare;
-  document.getElementById('toggle-auto').classList.toggle('on', autoCompare);
-  renderTable();
-}
-
-function toggleFeatures() {
-  showFeatures = !showFeatures;
-  document.getElementById('toggle-features').classList.toggle('on', showFeatures);
-  renderTable();
-}
-
-// INIT
 loadSheetData();
 </script>
 </body>
