@@ -303,11 +303,11 @@ svg{display:inline-block;vertical-align:middle;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script>
-Chart.register(ChartDataLabels);
 const SHEET_ID='1--DzB0hQ0dbVuhca3PNNr9JpMX2oLtmEi6PzYokWwXA';
 const SHEETS=['신디사이저','디지털피아노','전자드럼'];
 const CAT_INFO={'디지털피아노':{cls:'dp',color:'#1a56db',icon:'♪'},'신디사이저':{cls:'sy',color:'#0e9f6e',icon:'♫'},'전자드럼':{cls:'dr',color:'#d97706',icon:'◎'}};
 const BCOLS=['#1a56db','#0e9f6e','#d97706','#7e3af2','#e02424','#0694a2','#c27803','#057a55'];
+const STAR_MODELS=new Set(['SP7','SP7 Grand','SP8','K2061','K2088','K2700','CK88','MODX M6','MODX M7','MODX M8','MONTAGE M6','MONTAGE M7','MONTAGE M8X','Stage 4 73','Stage 4 88','Piano 6 73','Piano 6 88','CUP P1W','MPS-M1','DP-300 PLUS','DP-500 PLUS','AP-750','X5','X9','KED-STARTER']);
 let DATA={},RAW_HDR={};
 let selected=new Set(),autoComp=true,showFeat=false;
 let activeF={price:null,target:null};
@@ -459,7 +459,7 @@ function buildTree(){
               ${Object.keys(models).map(m=>`
                 <div class="mi" data-model="${m}" data-cat="${cat}" data-brand="${brand}">
                   <input type="checkbox" id="cb-${cat}-${brand}-${m}" onchange="onCheck('${cat}','${brand}','${m}',this.checked)">
-                  <label class="mn" for="cb-${cat}-${brand}-${m}">${m}</label>
+                  <label class="mn" for="cb-${cat}-${brand}-${m}">${m}${STAR_MODELS.has(m)?' ⭐':''}</label>
                 </div>`).join('')}
             </div>
           </div>`).join('')}
@@ -584,6 +584,7 @@ function renderLineup(){
 
   luBarC=new Chart(document.getElementById('lu-bar').getContext('2d'),{
     type:'bar',
+    plugins:[ChartDataLabels],
     data:{labels,datasets:[
       {label:'가격(만원)',data:prices,backgroundColor:color+'33',borderColor:color,borderWidth:1.5,borderRadius:4},
       {label:'평균가',data:labels.map(()=>avg),type:'line',borderColor:'#e02424',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0}
@@ -602,7 +603,7 @@ function renderLineup(){
     <span class="li"><span class="ls" style="background:${color}"></span>가격</span>
     <span class="li"><span style="width:16px;height:0;border-top:2px dashed #e02424;display:inline-block"></span>평균 ${avg}만원</span>`;
 
-  // 버블차트: Y축 제거, 가격 수평 분포 (jitter로 겹침 방지)
+  // 버블차트: Y축 제거, 가격 수평 분포
   const bubData=entries.map(([m,d],i)=>({x:Math.round(d.priceNum/10000),y:0.3+((i%5)*0.12),r:12,label:m,price:Math.round(d.priceNum/10000)}));
   luBubC=new Chart(document.getElementById('lu-bubble').getContext('2d'),{
     type:'bubble',
@@ -610,14 +611,9 @@ function renderLineup(){
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{
         legend:{display:false},
-        datalabels:{
-          display:true,anchor:'end',align:'top',
-          color:color,font:{size:9,weight:'600'},
-          formatter:(v,ctx)=>{const d=ctx.chart.data.datasets[0].data[ctx.dataIndex];return d.label+'\n'+d.price+'만원';}
-        },
-        tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return[d.label,`가격: ${d.price}만원`];}}}
+        tooltip:{callbacks:{label:ctx=>{const d=ctx.raw||{};return[d.label||'',`가격: ${d.price||d.x}만원`];}}}
       },
-      layout:{padding:{top:40,bottom:10}},
+      layout:{padding:{top:10,bottom:10}},
       scales:{
         x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만원',font:{size:10}},min:0,grid:{display:false},border:{display:false}},
         y:{display:false,min:0,max:1}
@@ -664,6 +660,7 @@ function renderRival(){
 
   rvBarC=new Chart(document.getElementById('rv-bar').getContext('2d'),{
     type:'bar',
+    plugins:[ChartDataLabels],
     data:{
       labels:allE.map(e=>e.model),
       datasets:[
@@ -689,7 +686,7 @@ function renderRival(){
     brandArr.map((b,bi)=>`<span class="li"><span class="ls" style="background:${BCOLS[bi%BCOLS.length]}"></span>${b}</span>`).join('')+
     `<span class="li"><span style="width:16px;height:0;border-top:2px dashed #e02424;display:inline-block"></span>평균 ${avg}만원</span>`;
 
-  // 버블차트: Y축 제거, 브랜드별 가격 수평 분포 (jitter로 겹침 방지)
+  // 버블차트: Y축 제거, 브랜드별 가격 수평 분포
   rvBubC=new Chart(document.getElementById('rv-bubble').getContext('2d'),{
     type:'bubble',
     data:{datasets:brandArr.map((brand,bi)=>({
@@ -704,15 +701,9 @@ function renderRival(){
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{
         legend:{display:false},
-        datalabels:{
-          display:true,anchor:'end',align:'top',
-          color:ctx=>BCOLS[ctx.datasetIndex%BCOLS.length],
-          font:{size:9,weight:'600'},
-          formatter:(v,ctx)=>{const d=ctx.chart.data.datasets[ctx.datasetIndex].data[ctx.dataIndex];return d.label+'\n'+d.price+'만원';}
-        },
-        tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return[`${ctx.dataset.label} ${d.label}`,`가격: ${d.price}만원`];}}}
+        tooltip:{callbacks:{label:ctx=>{const d=ctx.raw||{};return[`${ctx.dataset.label} ${d.label||''}`,`가격: ${d.price||d.x}만원`];}}}
       },
-      layout:{padding:{top:40,bottom:10}},
+      layout:{padding:{top:10,bottom:10}},
       scales:{
         x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만원',font:{size:10}},min:0,grid:{display:false},border:{display:false}},
         y:{display:false,min:0,max:1}
