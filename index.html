@@ -556,7 +556,20 @@ function buildBrandSel(){
   sel.innerHTML='<option value="">선택</option>'+[...brands].sort().map(b=>`<option value="${b}">${b}</option>`).join('');
 }
 
-function destroyC(c){if(c){c.destroy();return null;}return null;}
+function destroyC(c){
+  if(c){
+    try{c.destroy();}catch(e){}
+    return null;
+  }
+  return null;
+}
+function getCanvas(id){
+  const el=document.getElementById(id);
+  // Chart.js 내부 인스턴스 강제 제거
+  const existing=Chart.getChart(el);
+  if(existing)existing.destroy();
+  return el;
+}
 
 function renderLineup(){
   const brand=document.getElementById('lu-brand').value;
@@ -572,7 +585,7 @@ function renderLineup(){
   const avg=Math.round(prices.reduce((s,v)=>s+v,0)/prices.length);
   const color=(CAT_INFO[cat]||{color:'#1a56db'}).color;
 
-  luBarC=new Chart(document.getElementById('lu-bar').getContext('2d'),{
+  luBarC=new Chart(getCanvas('lu-bar'),{
     type:'bar',
     plugins:[ChartDataLabels],
     data:{labels,datasets:[
@@ -615,20 +628,22 @@ function renderRival(){
   const cat=document.getElementById('rv-cat').value;
   rvBarC=destroyC(rvBarC);
   document.getElementById('rv-bar-legend').innerHTML='';
-  if(!cat||rvBrands.size===0)return;
+  if(!cat||rvBrands.size===0){console.log('[rival] early return - cat:',cat,'brands:',rvBrands.size);return;}
   const brandArr=[...rvBrands];
   const allE=[];
   brandArr.forEach((brand,bi)=>{
     const models=DATA[cat]?.[brand]||{};
+    console.log('[rival] brand:',brand,'models count:',Object.keys(models).length);
     Object.entries(models).filter(([,d])=>d.priceNum>0).sort((a,b)=>a[1].priceNum-b[1].priceNum)
       .forEach(([model,data])=>allE.push({brand,model,data,bi}));
   });
-  if(!allE.length)return;
+  console.log('[rival] allE:',allE.length,'DATA[cat] keys:',DATA[cat]?Object.keys(DATA[cat]):[]);
+  if(!allE.length){console.log('[rival] allE empty - returning');return;}
 
   const allPrices=allE.map(e=>Math.round(e.data.priceNum/10000));
   const avg=Math.round(allPrices.reduce((s,v)=>s+v,0)/allPrices.length);
 
-  rvBarC=new Chart(document.getElementById('rv-bar').getContext('2d'),{
+  rvBarC=new Chart(getCanvas('rv-bar'),{
     type:'bar',
     plugins:[ChartDataLabels],
     data:{
@@ -646,7 +661,7 @@ function renderRival(){
       plugins:{
         legend:{display:false},
         tooltip:{callbacks:{label:ctx=>ctx.dataset.type==='line'?`평균 ${ctx.parsed.y}만원`:`${ctx.parsed.y}만원`}},
-        datalabels:{display:ctx=>ctx.dataset.type!=='line'&&ctx.parsed.y!==null,anchor:'end',align:'end',color:ctx=>BCOLS[ctx.datasetIndex%BCOLS.length],font:{size:9,weight:'600'},formatter:v=>v!=null?v+'만원':'',padding:{bottom:2}}
+        datalabels:{display:ctx=>{try{return ctx.dataset.type!=='line'&&ctx.parsed.y!=null;}catch(e){return false;}},anchor:'end',align:'end',color:ctx=>BCOLS[ctx.datasetIndex%BCOLS.length],font:{size:9,weight:'600'},formatter:v=>v!=null?v+'만원':'',padding:{bottom:2}}
       },
       layout:{padding:{top:24}},
       scales:{x:{ticks:{font:{size:10},maxRotation:40},grid:{display:false}},y:{ticks:{callback:v=>v+'만원',font:{size:11}},grid:{display:false},border:{display:false}}}}
