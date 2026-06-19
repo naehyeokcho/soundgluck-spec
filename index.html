@@ -654,13 +654,13 @@ function renderRival(){
   const allE=[];
   brandArr.forEach((brand,bi)=>{
     const models=DATA[cat]?.[brand]||{};
-    Object.entries(models).filter(([,d])=>d.priceNum>0).sort((a,b)=>a[1].priceNum-b[1].priceNum)
+    Object.entries(models).sort((a,b)=>(a[1].priceNum||0)-(b[1].priceNum||0))
       .forEach(([model,data])=>allE.push({brand,model,data,bi}));
   });
   if(!allE.length)return;
 
-  const allPrices=allE.map(e=>Math.round(e.data.priceNum/10000));
-  const avg=Math.round(allPrices.reduce((s,v)=>s+v,0)/allPrices.length);
+  const allPrices=allE.map(e=>e.data.priceNum||0).filter(v=>v>0);
+  const avg=allPrices.length?Math.round(allPrices.reduce((s,v)=>s+v,0)/allPrices.length):0;
 
   rvBarC=new Chart(document.getElementById('rv-bar').getContext('2d'),{
     type:'bar',
@@ -669,7 +669,7 @@ function renderRival(){
       datasets:[
         ...brandArr.map((brand,bi)=>({
           label:brand,
-          data:allE.map(e=>e.brand===brand?Math.round(e.data.priceNum/10000):null),
+          data:allE.map(e=>e.brand===brand?(e.data.priceNum>0?Math.round(e.data.priceNum/10000):null):null),
           backgroundColor:BCOLS[bi%BCOLS.length]+'55',borderColor:BCOLS[bi%BCOLS.length],borderWidth:1.5,borderRadius:4,skipNull:true
         })),
         {label:'카테고리 평균',data:allE.map(()=>avg),type:'line',borderColor:'#e02424',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0}
@@ -694,7 +694,7 @@ function renderRival(){
     type:'bubble',
     data:{datasets:brandArr.map((brand,bi)=>({
       label:brand,
-      data:allE.filter(e=>e.brand===brand).map((e,i)=>({
+      data:allE.filter(e=>e.brand===brand&&e.data.priceNum>0).map((e,i)=>({
         x:Math.round(e.data.priceNum/10000),
         y:0.2+(bi*0.15)+((i%3)*0.08),
         r:12,label:e.model,price:Math.round(e.data.priceNum/10000)
