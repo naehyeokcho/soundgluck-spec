@@ -303,6 +303,7 @@ svg{display:inline-block;vertical-align:middle;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script>
+Chart.register(ChartDataLabels);
 const SHEET_ID='1--DzB0hQ0dbVuhca3PNNr9JpMX2oLtmEi6PzYokWwXA';
 const SHEETS=['신디사이저','디지털피아노','전자드럼'];
 const CAT_INFO={'디지털피아노':{cls:'dp',color:'#1a56db',icon:'♪'},'신디사이저':{cls:'sy',color:'#0e9f6e',icon:'♫'},'전자드럼':{cls:'dr',color:'#d97706',icon:'◎'}};
