@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOUNDGLUCK Gear Spec Navigator V2.2</title>
+<title>SOUNDGLUCK Gear Spec Navigator V2.3</title>
 <style>
 :root{--bg:#fff;--bg2:#f8f9fa;--bg3:#f0f1f3;--border:#e2e4e8;--text:#111318;--text2:#5a5f6e;--text3:#9299a8;--accent:#1a56db;--accent2:#e8effd;--accent3:#1348c2;--cat-dp:#1a56db;--cat-dp-bg:#e8effd;--cat-dp-bd:#b3c8f8;--cat-sy:#0e9f6e;--cat-sy-bg:#e6f9f2;--cat-sy-bd:#6ee7c3;--cat-dr:#d97706;--cat-dr-bg:#fff8e6;--cat-dr-bd:#fcd34d;--green:#0e9f6e;--green-bg:#e8f8f2;--red:#e02424;--red-bg:#fde8e8;--orange:#d97706;--orange-bg:#fef3c7;--shadow:0 1px 3px rgba(0,0,0,.08);--r:10px;--rs:6px;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -167,7 +167,7 @@ svg{display:inline-block;vertical-align:middle;}
   <div class="tdiv"></div>
   <span class="topnav-sub">Gear Spec Navigator</span>
   <div class="topnav-right">
-    <span class="ver">v2.2</span>
+    <span class="ver">v2.3</span>
     <span class="sel-badge" id="sel-count">0개 선택</span>
     <button class="btn pri" onclick="clearAll()" style="flex:none">전체 해제</button>
   </div>
@@ -591,23 +591,37 @@ function renderLineup(){
       plugins:{
         legend:{display:false},
         tooltip:{callbacks:{label:ctx=>ctx.datasetIndex===0?`${ctx.parsed.y}만원`:`평균 ${ctx.parsed.y}만원`}},
-        datalabels:{display:ctx=>ctx.datasetIndex===0,anchor:'end',align:'end',color:color,font:{size:10,weight:'600'},formatter:v=>v+'만',padding:{bottom:2}}
+        datalabels:{display:ctx=>ctx.datasetIndex===0,anchor:'end',align:'end',color:color,font:{size:10,weight:'600'},formatter:v=>v+'만원',padding:{bottom:2}}
       },
-      layout:{padding:{top:20}},
-      scales:{x:{ticks:{font:{size:11},maxRotation:30},grid:{display:false}},y:{ticks:{callback:v=>v+'만',font:{size:11}},grid:{display:false},border:{display:false}}}}
+      layout:{padding:{top:24}},
+      scales:{x:{ticks:{font:{size:11},maxRotation:30},grid:{display:false}},y:{ticks:{callback:v=>v+'만원',font:{size:11}},grid:{display:false},border:{display:false}}}}
   });
 
   document.getElementById('lu-legend').innerHTML=`
-    <span class="li"><span class="ls" style="background:${color}"></span>가격 (만원)</span>
+    <span class="li"><span class="ls" style="background:${color}"></span>가격</span>
     <span class="li"><span style="width:16px;height:0;border-top:2px dashed #e02424;display:inline-block"></span>평균 ${avg}만원</span>`;
 
+  // 버블차트: Y축 제거, 가격 수평 분포 (jitter로 겹침 방지)
+  const bubData=entries.map(([m,d],i)=>({x:Math.round(d.priceNum/10000),y:0.3+((i%5)*0.12),r:12,label:m,price:Math.round(d.priceNum/10000)}));
   luBubC=new Chart(document.getElementById('lu-bubble').getContext('2d'),{
     type:'bubble',
-    data:{datasets:[{label:brand,data:entries.map(([m,d])=>({x:Math.round(d.priceNum/10000),y:d.score,r:10,label:m})),backgroundColor:color+'55',borderColor:color,borderWidth:1.5}]},
+    data:{datasets:[{label:brand,data:bubData,backgroundColor:color+'55',borderColor:color,borderWidth:1.5}]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},datalabels:{display:false},tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return[d.label,`가격: ${d.x}만원`,`스펙점수: ${d.y}점`];}}}},
-      scales:{x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만',font:{size:10}},min:0,grid:{display:false},border:{display:false}},
-              y:{title:{display:true,text:'스펙점수',font:{size:11}},min:0,max:100,ticks:{font:{size:10}},grid:{display:false},border:{display:false}}}}
+      plugins:{
+        legend:{display:false},
+        datalabels:{
+          display:true,anchor:'end',align:'top',
+          color:color,font:{size:9,weight:'600'},
+          formatter:(v,ctx)=>{const d=ctx.chart.data.datasets[0].data[ctx.dataIndex];return d.label+'\n'+d.price+'만원';}
+        },
+        tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return[d.label,`가격: ${d.price}만원`];}}}
+      },
+      layout:{padding:{top:40,bottom:10}},
+      scales:{
+        x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만원',font:{size:10}},min:0,grid:{display:false},border:{display:false}},
+        y:{display:false,min:0,max:1}
+      }
+    }
   });
 }
 
@@ -664,27 +678,45 @@ function renderRival(){
       plugins:{
         legend:{display:false},
         tooltip:{callbacks:{label:ctx=>ctx.dataset.type==='line'?`평균 ${ctx.parsed.y}만원`:`${ctx.parsed.y}만원`}},
-        datalabels:{display:ctx=>ctx.dataset.type!=='line'&&ctx.parsed.y!==null,anchor:'end',align:'end',color:ctx=>BCOLS[ctx.datasetIndex%BCOLS.length],font:{size:9,weight:'600'},formatter:v=>v!=null?v+'만':'',padding:{bottom:2}}
+        datalabels:{display:ctx=>ctx.dataset.type!=='line'&&ctx.parsed.y!==null,anchor:'end',align:'end',color:ctx=>BCOLS[ctx.datasetIndex%BCOLS.length],font:{size:9,weight:'600'},formatter:v=>v!=null?v+'만원':'',padding:{bottom:2}}
       },
-      layout:{padding:{top:20}},
-      scales:{x:{ticks:{font:{size:10},maxRotation:40},grid:{display:false}},y:{ticks:{callback:v=>v+'만',font:{size:11}},grid:{display:false},border:{display:false}}}}
+      layout:{padding:{top:24}},
+      scales:{x:{ticks:{font:{size:10},maxRotation:40},grid:{display:false}},y:{ticks:{callback:v=>v+'만원',font:{size:11}},grid:{display:false},border:{display:false}}}}
   });
 
   document.getElementById('rv-bar-legend').innerHTML=
     brandArr.map((b,bi)=>`<span class="li"><span class="ls" style="background:${BCOLS[bi%BCOLS.length]}"></span>${b}</span>`).join('')+
     `<span class="li"><span style="width:16px;height:0;border-top:2px dashed #e02424;display:inline-block"></span>평균 ${avg}만원</span>`;
 
+  // 버블차트: Y축 제거, 브랜드별 가격 수평 분포 (jitter로 겹침 방지)
   rvBubC=new Chart(document.getElementById('rv-bubble').getContext('2d'),{
     type:'bubble',
     data:{datasets:brandArr.map((brand,bi)=>({
       label:brand,
-      data:allE.filter(e=>e.brand===brand).map(e=>({x:Math.round(e.data.priceNum/10000),y:e.data.score,r:10,label:e.model})),
+      data:allE.filter(e=>e.brand===brand).map((e,i)=>({
+        x:Math.round(e.data.priceNum/10000),
+        y:0.2+(bi*0.15)+((i%3)*0.08),
+        r:12,label:e.model,price:Math.round(e.data.priceNum/10000)
+      })),
       backgroundColor:BCOLS[bi%BCOLS.length]+'55',borderColor:BCOLS[bi%BCOLS.length],borderWidth:1.5
     }))},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},datalabels:{display:false},tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return[`${ctx.dataset.label} ${d.label}`,`가격: ${d.x}만원`,`스펙점수: ${d.y}점`];}}}},
-      scales:{x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만',font:{size:10}},min:0,grid:{display:false},border:{display:false}},
-              y:{title:{display:true,text:'스펙점수',font:{size:11}},min:0,max:100,ticks:{font:{size:10}},grid:{display:false},border:{display:false}}}}
+      plugins:{
+        legend:{display:false},
+        datalabels:{
+          display:true,anchor:'end',align:'top',
+          color:ctx=>BCOLS[ctx.datasetIndex%BCOLS.length],
+          font:{size:9,weight:'600'},
+          formatter:(v,ctx)=>{const d=ctx.chart.data.datasets[ctx.datasetIndex].data[ctx.dataIndex];return d.label+'\n'+d.price+'만원';}
+        },
+        tooltip:{callbacks:{label:ctx=>{const d=ctx.raw;return[`${ctx.dataset.label} ${d.label}`,`가격: ${d.price}만원`];}}}
+      },
+      layout:{padding:{top:40,bottom:10}},
+      scales:{
+        x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만원',font:{size:10}},min:0,grid:{display:false},border:{display:false}},
+        y:{display:false,min:0,max:1}
+      }
+    }
   });
 
   document.getElementById('rv-bubble-legend').innerHTML=
