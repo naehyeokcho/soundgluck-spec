@@ -262,12 +262,8 @@ svg{display:inline-block;vertical-align:middle;}
               <option value="전자드럼">전자드럼</option>
             </select>
           </div>
-          <div class="cw" style="height:320px"><canvas id="lu-bar" role="img" aria-label="브랜드 라인업 가격 바 차트">브랜드 라인업 가격 분포를 보여주는 차트입니다.</canvas></div>
+          <div class="cw" style="height:320px"><canvas id="lu-bar"></canvas></div>
           <div id="lu-legend" class="legend" style="margin-top:8px"></div>
-        </div>
-        <div class="cs">
-          <div class="cs-title">가격 포지션 분포 <span class="cs-sub">x축: 가격, y축: 스펙점수</span></div>
-          <div class="cw" style="height:320px"><canvas id="lu-bubble" role="img" aria-label="가격 포지션 버블 차트">가격 대비 스펙점수 분포 버블 차트입니다.</canvas></div>
         </div>
       </div>
 
@@ -286,13 +282,8 @@ svg{display:inline-block;vertical-align:middle;}
             <span class="cl">브랜드 (복수)</span>
             <div id="rv-brands" style="display:flex;gap:6px;flex-wrap:wrap"></div>
           </div>
-          <div class="cw" style="height:320px"><canvas id="rv-bar" role="img" aria-label="경쟁 모델 가격 바 차트">브랜드별 경쟁 모델 가격 비교 차트입니다.</canvas></div>
+          <div class="cw" style="height:320px"><canvas id="rv-bar"></canvas></div>
           <div id="rv-bar-legend" class="legend" style="margin-top:8px"></div>
-        </div>
-        <div class="cs">
-          <div class="cs-title">브랜드별 가격 포지션 분포 <span class="cs-sub">색상으로 브랜드 구분</span></div>
-          <div id="rv-bubble-legend" class="legend"></div>
-          <div class="cw" style="height:320px"><canvas id="rv-bubble" role="img" aria-label="브랜드별 가격 포지션 버블 차트">브랜드별 가격 포지션 분포 버블 차트입니다.</canvas></div>
         </div>
       </div>
 
@@ -312,7 +303,7 @@ let DATA={},RAW_HDR={};
 let selected=new Set(),autoComp=true,showFeat=false;
 let activeF={price:null,target:null};
 let rvBrands=new Set();
-let luBarC=null,luBubC=null,rvBarC=null,rvBubC=null;
+let luBarC=null,rvBarC=null;
 
 async function loadSheetData(){
   const lo=document.getElementById('lo');
@@ -571,14 +562,13 @@ function renderLineup(){
   const brand=document.getElementById('lu-brand').value;
   const cat=document.getElementById('lu-cat').value;
   document.getElementById('lu-legend').innerHTML='';
-  luBarC=destroyC(luBarC);luBubC=destroyC(luBubC);
+  luBarC=destroyC(luBarC);
   if(!brand||!cat||!DATA[cat]||!DATA[cat][brand])return;
   const models=DATA[cat][brand];
   const entries=Object.entries(models).filter(([,d])=>d.priceNum>0).sort((a,b)=>a[1].priceNum-b[1].priceNum);
   if(!entries.length)return;
   const labels=entries.map(([m])=>m);
   const prices=entries.map(([,d])=>Math.round(d.priceNum/10000));
-  const scores=entries.map(([,d])=>d.score);
   const avg=Math.round(prices.reduce((s,v)=>s+v,0)/prices.length);
   const color=(CAT_INFO[cat]||{color:'#1a56db'}).color;
 
@@ -602,24 +592,6 @@ function renderLineup(){
   document.getElementById('lu-legend').innerHTML=`
     <span class="li"><span class="ls" style="background:${color}"></span>가격</span>
     <span class="li"><span style="width:16px;height:0;border-top:2px dashed #e02424;display:inline-block"></span>평균 ${avg}만원</span>`;
-
-  // 버블차트: Y축 제거, 가격 수평 분포
-  const bubData=entries.map(([m,d],i)=>({x:Math.round(d.priceNum/10000),y:0.3+((i%5)*0.12),r:12,label:m,price:Math.round(d.priceNum/10000)}));
-  luBubC=new Chart(document.getElementById('lu-bubble').getContext('2d'),{
-    type:'bubble',
-    data:{datasets:[{label:brand,data:bubData,backgroundColor:color+'55',borderColor:color,borderWidth:1.5}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:ctx=>{const d=ctx.raw||{};return[d.label||'',`가격: ${d.price||d.x}만원`];}}}
-      },
-      layout:{padding:{top:10,bottom:10}},
-      scales:{
-        x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만원',font:{size:10}},min:0,grid:{display:false},border:{display:false}},
-        y:{display:false,min:0,max:1}
-      }
-    }
-  });
 }
 
 /* RIVAL CHART */
@@ -628,8 +600,7 @@ function updateRivalBrands(){
   rvBrands.clear();
   document.getElementById('rv-brands').innerHTML='';
   document.getElementById('rv-bar-legend').innerHTML='';
-  document.getElementById('rv-bubble-legend').innerHTML='';
-  rvBarC=destroyC(rvBarC);rvBubC=destroyC(rvBubC);
+  rvBarC=destroyC(rvBarC);
   if(!cat||!DATA[cat])return;
   document.getElementById('rv-brands').innerHTML=Object.keys(DATA[cat]).map(b=>`<span class="fc" onclick="toggleRvBrand(this,'${b}')">${b}</span>`).join('');
 }
@@ -642,21 +613,20 @@ function toggleRvBrand(el,brand){
 
 function renderRival(){
   const cat=document.getElementById('rv-cat').value;
-  rvBarC=destroyC(rvBarC);rvBubC=destroyC(rvBubC);
+  rvBarC=destroyC(rvBarC);
   document.getElementById('rv-bar-legend').innerHTML='';
-  document.getElementById('rv-bubble-legend').innerHTML='';
   if(!cat||rvBrands.size===0)return;
   const brandArr=[...rvBrands];
   const allE=[];
   brandArr.forEach((brand,bi)=>{
     const models=DATA[cat]?.[brand]||{};
-    Object.entries(models).sort((a,b)=>(a[1].priceNum||0)-(b[1].priceNum||0))
+    Object.entries(models).filter(([,d])=>d.priceNum>0).sort((a,b)=>a[1].priceNum-b[1].priceNum)
       .forEach(([model,data])=>allE.push({brand,model,data,bi}));
   });
   if(!allE.length)return;
 
-  const allPrices=allE.map(e=>e.data.priceNum||0).filter(v=>v>0);
-  const avg=allPrices.length?Math.round(allPrices.reduce((s,v)=>s+v,0)/allPrices.length):0;
+  const allPrices=allE.map(e=>Math.round(e.data.priceNum/10000));
+  const avg=Math.round(allPrices.reduce((s,v)=>s+v,0)/allPrices.length);
 
   rvBarC=new Chart(document.getElementById('rv-bar').getContext('2d'),{
     type:'bar',
@@ -666,7 +636,7 @@ function renderRival(){
       datasets:[
         ...brandArr.map((brand,bi)=>({
           label:brand,
-          data:allE.map(e=>e.brand===brand?(e.data.priceNum>0?Math.round(e.data.priceNum/10000):null):null),
+          data:allE.map(e=>e.brand===brand?Math.round(e.data.priceNum/10000):null),
           backgroundColor:BCOLS[bi%BCOLS.length]+'55',borderColor:BCOLS[bi%BCOLS.length],borderWidth:1.5,borderRadius:4,skipNull:true
         })),
         {label:'카테고리 평균',data:allE.map(()=>avg),type:'line',borderColor:'#e02424',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0}
@@ -685,34 +655,6 @@ function renderRival(){
   document.getElementById('rv-bar-legend').innerHTML=
     brandArr.map((b,bi)=>`<span class="li"><span class="ls" style="background:${BCOLS[bi%BCOLS.length]}"></span>${b}</span>`).join('')+
     `<span class="li"><span style="width:16px;height:0;border-top:2px dashed #e02424;display:inline-block"></span>평균 ${avg}만원</span>`;
-
-  // 버블차트: Y축 제거, 브랜드별 가격 수평 분포
-  rvBubC=new Chart(document.getElementById('rv-bubble').getContext('2d'),{
-    type:'bubble',
-    data:{datasets:brandArr.map((brand,bi)=>({
-      label:brand,
-      data:allE.filter(e=>e.brand===brand&&e.data.priceNum>0).map((e,i)=>({
-        x:Math.round(e.data.priceNum/10000),
-        y:0.2+(bi*0.15)+((i%3)*0.08),
-        r:12,label:e.model,price:Math.round(e.data.priceNum/10000)
-      })),
-      backgroundColor:BCOLS[bi%BCOLS.length]+'55',borderColor:BCOLS[bi%BCOLS.length],borderWidth:1.5
-    }))},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:ctx=>{const d=ctx.raw||{};return[`${ctx.dataset.label} ${d.label||''}`,`가격: ${d.price||d.x}만원`];}}}
-      },
-      layout:{padding:{top:10,bottom:10}},
-      scales:{
-        x:{title:{display:true,text:'가격 (만원)',font:{size:11}},ticks:{callback:v=>v+'만원',font:{size:10}},min:0,grid:{display:false},border:{display:false}},
-        y:{display:false,min:0,max:1}
-      }
-    }
-  });
-
-  document.getElementById('rv-bubble-legend').innerHTML=
-    brandArr.map((b,bi)=>`<span class="li"><span class="lsc" style="background:${BCOLS[bi%BCOLS.length]}"></span>${b}</span>`).join('');
 }
 
 /* SELECTION */
