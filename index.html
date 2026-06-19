@@ -293,6 +293,30 @@ svg{display:inline-block;vertical-align:middle;}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+// Bar 위에 숫자 표시 커스텀 플러그인
+const barLabelPlugin={
+  id:'barLabel',
+  afterDatasetsDraw(chart){
+    const{ctx,data}=chart;
+    chart.data.datasets.forEach((ds,di)=>{
+      if(ds.type==='line')return;
+      const meta=chart.getDatasetMeta(di);
+      meta.data.forEach((bar,i)=>{
+        const val=ds.data[i];
+        if(val==null)return;
+        const color=ds.borderColor||'#333';
+        ctx.save();
+        ctx.fillStyle=color;
+        ctx.font='bold 9px Inter, sans-serif';
+        ctx.textAlign='center';
+        ctx.textBaseline='bottom';
+        ctx.fillText(val+'만원', bar.x, bar.y-3);
+        ctx.restore();
+      });
+    });
+  }
+};
+Chart.register(barLabelPlugin);
 const SHEET_ID='1--DzB0hQ0dbVuhca3PNNr9JpMX2oLtmEi6PzYokWwXA';
 const SHEETS=['신디사이저','디지털피아노','전자드럼'];
 const CAT_INFO={'디지털피아노':{cls:'dp',color:'#1a56db',icon:'♪'},'신디사이저':{cls:'sy',color:'#0e9f6e',icon:'♫'},'전자드럼':{cls:'dr',color:'#d97706',icon:'◎'}};
