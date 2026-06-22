@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOUNDGLUCK Gear Spec Navigator V2.3</title>
+<title>SOUNDGLUCK Gear Spec Navigator V2.4</title>
 <style>
-:root{--bg:#fff;--bg2:#f8f9fa;--bg3:#f0f1f3;--border:#e2e4e8;--text:#111318;--text2:#5a5f6e;--text3:#9299a8;--accent:#1a56db;--accent2:#e8effd;--accent3:#1348c2;--cat-dp:#1a56db;--cat-dp-bg:#e8effd;--cat-dp-bd:#b3c8f8;--cat-sy:#0e9f6e;--cat-sy-bg:#e6f9f2;--cat-sy-bd:#6ee7c3;--cat-dr:#d97706;--cat-dr-bg:#fff8e6;--cat-dr-bd:#fcd34d;--green:#0e9f6e;--green-bg:#e8f8f2;--red:#e02424;--red-bg:#fde8e8;--orange:#d97706;--orange-bg:#fef3c7;--shadow:0 1px 3px rgba(0,0,0,.08);--r:10px;--rs:6px;}
+:root{--bg:#fff;--bg2:#f8f9fa;--bg3:#f0f1f3;--border:#e2e4e8;--text:#111318;--text2:#5a5f6e;--text3:#9299a8;--accent:#1a56db;--accent2:#e8effd;--accent3:#1348c2;--cat-dp:#1a56db;--cat-dp-bg:#e8effd;--cat-dp-bd:#b3c8f8;--cat-sy:#0e9f6e;--cat-sy-bg:#e6f9f2;--cat-sy-bd:#6ee7c3;--cat-dr:#d97706;--cat-dr-bg:#fff8e6;--cat-dr-bd:#fcd34d;--cat-amp:#e53e3e;--cat-amp-bg:#fff5f5;--cat-amp-bd:#feb2b2;--cat-mon:#7c3aed;--cat-mon-bg:#f5f3ff;--cat-mon-bd:#c4b5fd;--green:#0e9f6e;--green-bg:#e8f8f2;--red:#e02424;--red-bg:#fde8e8;--orange:#d97706;--orange-bg:#fef3c7;--shadow:0 1px 3px rgba(0,0,0,.08);--r:10px;--rs:6px;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg2);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;}
 .topnav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:14px;height:52px;position:sticky;top:0;z-index:200;}
@@ -34,6 +34,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .cat-pill.dp{background:var(--cat-dp-bg);color:var(--cat-dp);border:1px solid var(--cat-dp-bd);}
 .cat-pill.sy{background:var(--cat-sy-bg);color:var(--cat-sy);border:1px solid var(--cat-sy-bd);}
 .cat-pill.dr{background:var(--cat-dr-bg);color:var(--cat-dr);border:1px solid var(--cat-dr-bd);}
+.cat-pill.amp{background:var(--cat-amp-bg);color:var(--cat-amp);border:1px solid var(--cat-amp-bd);}
+.cat-pill.mon{background:var(--cat-mon-bg);color:var(--cat-mon);border:1px solid var(--cat-mon-bd);}
 .ca{margin-left:auto;color:var(--text3);transition:transform .2s;font-size:10px;}
 .ca.open{transform:rotate(90deg);}
 .br-hd{display:flex;align-items:center;padding:4px 13px 4px 22px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);}
@@ -58,14 +60,22 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .cat-card.sy.active{border-color:var(--cat-sy);}
 .cat-card.dr{background:var(--cat-dr-bg);border-color:var(--cat-dr-bd);}
 .cat-card.dr.active{border-color:var(--cat-dr);}
+.cat-card.amp{background:var(--cat-amp-bg);border-color:var(--cat-amp-bd);}
+.cat-card.amp.active{border-color:var(--cat-amp);}
+.cat-card.mon{background:var(--cat-mon-bg);border-color:var(--cat-mon-bd);}
+.cat-card.mon.active{border-color:var(--cat-mon);}
 .ci{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
 .cat-card.dp .ci{background:var(--cat-dp);color:#fff;}
 .cat-card.sy .ci{background:var(--cat-sy);color:#fff;}
 .cat-card.dr .ci{background:var(--cat-dr);color:#fff;}
+.cat-card.amp .ci{background:var(--cat-amp);color:#fff;}
+.cat-card.mon .ci{background:var(--cat-mon);color:#fff;}
 .cc-name{font-size:12px;font-weight:600;}
 .cat-card.dp .cc-name{color:var(--cat-dp);}
 .cat-card.sy .cc-name{color:var(--cat-sy);}
 .cat-card.dr .cc-name{color:var(--cat-dr);}
+.cat-card.amp .cc-name{color:var(--cat-amp);}
+.cat-card.mon .cc-name{color:var(--cat-mon);}
 .cc-cnt{font-size:10px;color:var(--text3);margin-top:1px;}
 .tab-nav{display:flex;gap:0;}
 .tb{padding:8px 16px;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
@@ -88,6 +98,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .rt.dp{background:var(--cat-dp-bg);color:var(--cat-dp);}
 .rt.sy{background:var(--cat-sy-bg);color:var(--cat-sy);}
 .rt.dr{background:var(--cat-dr-bg);color:var(--cat-dr);}
+.rt.amp{background:var(--cat-amp-bg);color:var(--cat-amp);}
+.rt.mon{background:var(--cat-mon-bg);color:var(--cat-mon);}
 .rn{font-size:13px;font-weight:700;color:var(--text);}
 .rd{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5;}
 .cs{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
@@ -167,7 +179,7 @@ svg{display:inline-block;vertical-align:middle;}
   <div class="tdiv"></div>
   <span class="topnav-sub">Gear Spec Navigator</span>
   <div class="topnav-right">
-    <span class="ver">v2.3</span>
+    <span class="ver">v2.4</span>
     <span class="sel-badge" id="sel-count">0개 선택</span>
     <button class="btn pri" onclick="clearAll()" style="flex:none">전체 해제</button>
   </div>
@@ -260,6 +272,8 @@ svg{display:inline-block;vertical-align:middle;}
               <option value="디지털피아노">디지털피아노</option>
               <option value="신디사이저">신디사이저</option>
               <option value="전자드럼">전자드럼</option>
+              <option value="앰프">앰프</option>
+              <option value="모니터스피커">모니터스피커</option>
             </select>
           </div>
           <div class="cw" style="height:320px"><canvas id="lu-bar"></canvas></div>
@@ -278,6 +292,8 @@ svg{display:inline-block;vertical-align:middle;}
               <option value="디지털피아노">디지털피아노</option>
               <option value="신디사이저">신디사이저</option>
               <option value="전자드럼">전자드럼</option>
+              <option value="앰프">앰프</option>
+              <option value="모니터스피커">모니터스피커</option>
             </select>
             <span class="cl">브랜드 (복수)</span>
             <div id="rv-brands" style="display:flex;gap:6px;flex-wrap:wrap"></div>
@@ -318,8 +334,8 @@ const barLabelPlugin={
 };
 Chart.register(barLabelPlugin);
 const SHEET_ID='1--DzB0hQ0dbVuhca3PNNr9JpMX2oLtmEi6PzYokWwXA';
-const SHEETS=['신디사이저','디지털피아노','전자드럼'];
-const CAT_INFO={'디지털피아노':{cls:'dp',color:'#1a56db',icon:'♪'},'신디사이저':{cls:'sy',color:'#0e9f6e',icon:'♫'},'전자드럼':{cls:'dr',color:'#d97706',icon:'◎'}};
+const SHEETS=['신디사이저','디지털피아노','전자드럼','앰프','모니터스피커'];
+const CAT_INFO={'디지털피아노':{cls:'dp',color:'#1a56db',icon:'♪'},'신디사이저':{cls:'sy',color:'#0e9f6e',icon:'♫'},'전자드럼':{cls:'dr',color:'#d97706',icon:'◎'},'앰프':{cls:'amp',color:'#e53e3e',icon:'🔊'},'모니터스피커':{cls:'mon',color:'#7c3aed',icon:'🎚'}};
 const BCOLS=['#1a56db','#0e9f6e','#d97706','#7e3af2','#e02424','#0694a2','#c27803','#057a55'];
 const STAR_MODELS=new Set(['SP7','SP7 Grand','SP8','K2061','K2088','K2700','CK88','MODX M6','MODX M7','MODX M8','MONTAGE M6','MONTAGE M7','MONTAGE M8X','Stage 4 73','Stage 4 88','Piano 6 73','Piano 6 88','CUP P1W','MPS-M1','DP-300 PLUS','DP-500 PLUS','AP-750','X5','X9','KED-STARTER']);
 let DATA={},RAW_HDR={};
@@ -375,7 +391,9 @@ function parseSheet(cat,csv){
 const SM={
   '신디사이저':{건반:['건반수','건반타입','건반재질','애프터터치'],음원:['동시발음','음원엔진','FlashPlay','사운드메모리','팩토리프로그램','멀티/퍼포먼스'],'편집/기능':['존수','아르페지에이터','CC시퀀서','이펙터'],연결:['MIDI단자','USB Audio','오디오출력','오디오입력','디스플레이'],외형:['무게','색상']},
   '디지털피아노':{건반:['건반수','건반타입','건반재질','에스케이프먼트','터치감도'],음원:['동시발음','사운드라이브러리','팩토리음색','현댐퍼공명'],기능:['연주모드','메트로놈','레코더','자동반주','디스플레이'],음향:['앰프출력','스피커수'],연결:['블루투스','USB','헤드폰단자','아날로그입력','아날로그출력','페달입력'],외형:['무게','폼팩터','색상']},
-  '전자드럼':{모듈:['음색수','프리셋킷수','유저킷수','훈련기능'],스네어:['스네어패드','스네어인치','스네어존수','림샷','크로스스틱'],탐:['탐패드','탐인치','탐존수'],킥:['킥패드','킥인치'],하이햇:['하이햇패드','하이햇센서','하이햇오픈/클로즈','하프오픈','초크(HH)'],크래쉬:['크래쉬패드','크래쉬존수','초크(크래쉬)'],라이드:['라이드패드','라이드존수(보우/엣지/벨)','초크(라이드)'],연결:['AUX IN','헤드폰','USB MIDI','USB Audio','블루투스']}
+  '전자드럼':{모듈:['음색수','프리셋킷수','유저킷수','훈련기능'],스네어:['스네어패드','스네어인치','스네어존수','림샷','크로스스틱'],탐:['탐패드','탐인치','탐존수'],킥:['킥패드','킥인치'],하이햇:['하이햇패드','하이햇센서','하이햇오픈/클로즈','하프오픈','초크(HH)'],크래쉬:['크래쉬패드','크래쉬존수','초크(크래쉬)'],라이드:['라이드패드','라이드존수(보우/엣지/벨)','초크(라이드)'],연결:['AUX IN','헤드폰','USB MIDI','USB Audio','블루투스']},
+  '앰프':{기본:['앰프 타입','출력 (W RMS)','회로 방식','우퍼 크기','채널 수','채널 구성'],EQ이펙트:['EQ 밴드 수','EQ 상세','파라메트릭 Mid','게인 컨트롤','내장 이펙트'],연결:['INPUT 악기 잭 (크기)','INPUT AUX (크기)','INPUT XLR (마이크)','OUTPUT 헤드폰 잭 (크기)','OUTPUT XLR (라인아웃)','CabSim HP 출력','FX 루프','내장 튜너','블루투스','프리셋 저장'],외형:['무게 (kg)','크기 W×H×D (mm)','비고 / 특징']},
+  '모니터스피커':{기본:['형태','총 출력 (W)','LF 출력 (W)','HF 출력 (W)','앰프 방식','우퍼 인치','트위터 인치'],주파수:['주파수 응답 (-10dB)','주파수 응답 (-3dB)','크로스오버 주파수','최대 SPL (dB)'],연결:['INPUT XLR (밸런스)','INPUT TRS 1/4\" (밸런스)','INPUT RCA','INPUT 3.5mm','OUTPUT 헤드폰','Room Control','High Trim','블루투스'],외형:['무게 (kg)','크기 W×H×D (mm)','판매 단위','비고']}
 };
 
 function buildSpecs(cat,headers,cols){
@@ -423,6 +441,19 @@ function calcScore(cat,headers,cols){
     const rd=g('라이드존수(보우/엣지/벨)');if(rd.includes('3존')||rd.includes('벨'))s+=25;else if(rd.includes('2존'))s+=15;else if(rd.includes('1존')||rd==='O')s+=5;
     if(g('초크(크래쉬)')==='O')s+=25;
     if(g('하프오픈')==='O')s+=20;
+  }else if(cat==='앰프'){
+    const w=parseInt(g('출력 (W RMS)'));if(!isNaN(w))s+=Math.min(40,Math.round(w/100*40));
+    const eq=parseInt(g('EQ 밴드 수'));if(!isNaN(eq))s+=Math.min(15,eq*5);
+    if(g('내장 이펙트')&&g('내장 이펙트')!=='-'&&g('내장 이펙트')!=='')s+=15;
+    if(g('FX 루프')==='O')s+=10;
+    if(g('프리셋 저장')==='O'||g('프리셋 저장').startsWith('O'))s+=10;
+    if(g('내장 튜너')==='O')s+=10;
+  }else if(cat==='모니터스피커'){
+    const w=parseInt(g('총 출력 (W)'));if(!isNaN(w))s+=Math.min(40,Math.round(w/200*40));
+    const wi=parseFloat(g('우퍼 인치'));if(!isNaN(wi))s+=Math.min(25,Math.round(wi/8*25));
+    if(g('Room Control')&&g('Room Control')!=='X'&&g('Room Control')!=='')s+=15;
+    if(g('High Trim')&&g('High Trim')!=='X'&&g('High Trim')!=='')s+=10;
+    if(g('INPUT XLR (밸런스)')==='O'||g('INPUT XLR (밸런스)').startsWith('O'))s+=10;
   }
   return Math.min(100,Math.round(s));
 }
