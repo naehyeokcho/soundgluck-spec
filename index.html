@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOUNDGLUCK Gear Spec Navigator V2.4</title>
+<title>SOUNDGLUCK Gear Spec Navigator V2.5</title>
 <style>
 :root{--bg:#fff;--bg2:#f8f9fa;--bg3:#f0f1f3;--border:#e2e4e8;--text:#111318;--text2:#5a5f6e;--text3:#9299a8;--accent:#1a56db;--accent2:#e8effd;--accent3:#1348c2;--cat-dp:#1a56db;--cat-dp-bg:#e8effd;--cat-dp-bd:#b3c8f8;--cat-sy:#0e9f6e;--cat-sy-bg:#e6f9f2;--cat-sy-bd:#6ee7c3;--cat-dr:#d97706;--cat-dr-bg:#fff8e6;--cat-dr-bd:#fcd34d;--cat-amp:#e53e3e;--cat-amp-bg:#fff5f5;--cat-amp-bd:#feb2b2;--cat-mon:#7c3aed;--cat-mon-bg:#f5f3ff;--cat-mon-bd:#c4b5fd;--green:#0e9f6e;--green-bg:#e8f8f2;--red:#e02424;--red-bg:#fde8e8;--orange:#d97706;--orange-bg:#fef3c7;--shadow:0 1px 3px rgba(0,0,0,.08);--r:10px;--rs:6px;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -165,6 +165,156 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .lsc{width:10px;height:10px;border-radius:50%;display:inline-block;}
 @keyframes spin{to{transform:rotate(360deg);}}
 svg{display:inline-block;vertical-align:middle;}
+
+/* ── 모바일 전용 ─────────────────────────────── */
+@media(max-width:767px){
+  /* 기본 레이아웃 */
+  .app{flex-direction:column;}
+  .sidebar{display:none;} /* PC 사이드바 숨김 */
+  .main{width:100%;padding-bottom:64px;} /* 하단 탭바 높이만큼 여백 */
+  .top-panel{padding:10px 12px 0;}
+  .content{padding:11px 12px;}
+
+  /* cat-cards 2열 그리드 */
+  .cat-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .cat-card{padding:8px 10px;}
+  .ci{width:26px;height:26px;font-size:13px;}
+  .cc-name{font-size:11px;}
+  .cc-cnt{font-size:9px;}
+
+  /* PC 탭 숨김 */
+  .tab-nav{display:none;}
+
+  /* 비교표 툴바 간소화 */
+  .toolbar{flex-wrap:wrap;gap:7px;}
+  .tt{font-size:13px;}
+  .tc{font-size:11px;padding:4px 9px;}
+
+  /* 비교표 가로스크롤 */
+  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .ct{min-width:320px;}
+  .th-blank{min-width:90px;width:90px;}
+  .th-model{min-width:130px;}
+  .tdl{font-size:11px;padding:6px 8px;white-space:nowrap;}
+  .tdv{font-size:11px;padding:6px 10px;}
+
+  /* topnav 간소화 */
+  .topnav-sub{display:none;}
+  .tdiv{display:none;}
+  .sel-badge{font-size:11px;padding:2px 8px;}
+  .btn{padding:5px 10px;font-size:11px;}
+
+  /* 하단 탭바 */
+  .mob-tabbar{
+    display:flex;
+    position:fixed;bottom:0;left:0;right:0;
+    height:56px;
+    background:var(--bg);
+    border-top:1px solid var(--border);
+    z-index:300;
+  }
+  .mob-tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;cursor:pointer;border:none;background:none;
+    font-size:10px;font-weight:600;color:var(--text3);
+    transition:color .15s;
+    padding:0;
+  }
+  .mob-tab.active{color:var(--accent);}
+  .mob-tab svg{width:20px;height:20px;}
+
+  /* 모바일 모델선택 버튼 (상단) */
+  .mob-sel-btn{
+    display:flex;align-items:center;gap:8px;
+    width:100%;padding:10px 13px;
+    background:var(--bg);border:1px solid var(--border);
+    border-radius:var(--r);cursor:pointer;
+    font-size:13px;font-weight:600;color:var(--text2);
+    margin-bottom:11px;box-shadow:var(--shadow);
+  }
+  .mob-sel-btn svg{color:var(--accent);}
+  .mob-sel-count{margin-left:auto;font-size:11px;color:var(--accent);font-weight:700;}
+
+  /* 드로어 오버레이 */
+  .mob-overlay{
+    display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,.45);z-index:400;
+  }
+  .mob-overlay.open{display:block;}
+
+  /* 드로어 */
+  .mob-drawer{
+    position:fixed;left:0;right:0;bottom:0;
+    height:82vh;
+    background:var(--bg);border-radius:16px 16px 0 0;
+    z-index:500;
+    transform:translateY(100%);
+    transition:transform .28s cubic-bezier(.32,.72,0,1);
+    display:flex;flex-direction:column;
+  }
+  .mob-drawer.open{transform:translateY(0);}
+  .mob-drawer-handle{
+    width:36px;height:4px;border-radius:2px;
+    background:var(--border);margin:11px auto 0;flex-shrink:0;
+  }
+  .mob-drawer-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 15px 8px;border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .mob-drawer-title{font-size:14px;font-weight:700;color:var(--text);}
+  .mob-drawer-close{
+    width:28px;height:28px;border-radius:50%;border:1px solid var(--border);
+    background:var(--bg2);cursor:pointer;font-size:14px;color:var(--text2);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .mob-drawer-body{flex:1;overflow-y:auto;}
+  .mob-drawer-foot{
+    padding:10px 13px;border-top:1px solid var(--border);
+    display:flex;gap:7px;flex-shrink:0;
+  }
+
+  /* 모바일 스펙 카드 (단일 모델 보기) */
+  .mob-spec-card{
+    background:var(--bg);border:1px solid var(--border);
+    border-radius:var(--r);padding:14px 15px;
+    margin-bottom:11px;box-shadow:var(--shadow);
+  }
+  .mob-spec-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+  .mob-spec-icon{
+    width:38px;height:38px;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex-shrink:0;
+  }
+  .mob-spec-brand{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);}
+  .mob-spec-name{font-size:16px;font-weight:700;color:var(--text);line-height:1.2;}
+  .mob-spec-price{font-size:13px;font-weight:700;color:var(--accent);margin-top:2px;}
+  .mob-spec-sec{margin-bottom:10px;}
+  .mob-spec-sec-title{
+    font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--text3);margin-bottom:6px;padding-bottom:4px;
+    border-bottom:1px solid var(--border);
+  }
+  .mob-spec-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid var(--bg3);}
+  .mob-spec-row:last-child{border-bottom:none;}
+  .mob-spec-key{font-size:11px;color:var(--text2);flex-shrink:0;max-width:45%;}
+  .mob-spec-val{font-size:11px;font-weight:600;color:var(--text);text-align:right;word-break:break-all;}
+  .mob-feat-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+  .mob-feat-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--accent2);color:var(--accent);}
+
+  /* 모바일 스펙보기 패널 */
+  #mob-panel-view{padding:0;}
+  .mob-model-sel-hint{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;}
+}
+
+/* PC에서 모바일 전용 요소 숨김 */
+@media(min-width:768px){
+  .mob-tabbar{display:none;}
+  .mob-overlay{display:none!important;}
+  .mob-drawer{display:none!important;}
+  .mob-sel-btn{display:none;}
+  #mob-panel-view{display:none!important;}
+}
 </style>
 </head>
 <body>
@@ -179,7 +329,7 @@ svg{display:inline-block;vertical-align:middle;}
   <div class="tdiv"></div>
   <span class="topnav-sub">Gear Spec Navigator</span>
   <div class="topnav-right">
-    <span class="ver">v2.4</span>
+    <span class="ver">v2.5</span>
     <span class="sel-badge" id="sel-count">0개 선택</span>
     <button class="btn pri" onclick="clearAll()" style="flex:none">전체 해제</button>
   </div>
@@ -200,6 +350,31 @@ svg{display:inline-block;vertical-align:middle;}
     </div>
   </aside>
 
+  <!-- 모바일 드로어 오버레이 -->
+  <div class="mob-overlay" id="mob-overlay" onclick="closeDrawer()"></div>
+
+  <!-- 모바일 모델 선택 드로어 -->
+  <div class="mob-drawer" id="mob-drawer">
+    <div class="mob-drawer-handle"></div>
+    <div class="mob-drawer-head">
+      <span class="mob-drawer-title">모델 선택</span>
+      <button class="mob-drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="mob-drawer-body">
+      <div style="padding:9px 13px;border-bottom:1px solid var(--border);">
+        <div class="sw">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input class="si" placeholder="모델 검색..." oninput="filterModels(this.value)">
+        </div>
+      </div>
+      <div class="tree-wrap" id="mob-tree"></div>
+    </div>
+    <div class="mob-drawer-foot">
+      <button class="btn" style="flex:1" onclick="clearAll();closeDrawer()">전체 해제</button>
+      <button class="btn pri" style="flex:1" onclick="closeDrawer();mobSwitchTab('compare')">비교하기</button>
+    </div>
+  </div>
+
   <main class="main">
     <div class="top-panel">
       <div class="cat-cards" id="cat-cards"></div>
@@ -212,6 +387,18 @@ svg{display:inline-block;vertical-align:middle;}
     </div>
 
     <div class="content">
+
+      <!-- 모바일 전용: 스펙 보기 패널 -->
+      <div class="panel" id="mob-panel-view">
+        <button class="mob-sel-btn" onclick="openDrawer()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          모델 선택
+          <span class="mob-sel-count" id="mob-sel-count2"></span>
+        </button>
+        <div id="mob-spec-view">
+          <div class="mob-model-sel-hint">모델을 선택하면 스펙이 표시됩니다</div>
+        </div>
+      </div>
 
       <!-- TAB 1: 스펙 비교표 -->
       <div class="panel active" id="panel-compare">
@@ -306,6 +493,18 @@ svg{display:inline-block;vertical-align:middle;}
     </div>
   </main>
 </div>
+
+<!-- 모바일 하단 탭바 -->
+<nav class="mob-tabbar">
+  <button class="mob-tab active" id="mobtab-view" onclick="mobSwitchTab('view')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    스펙 확인
+  </button>
+  <button class="mob-tab" id="mobtab-compare" onclick="mobSwitchTab('compare')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="9" height="18" rx="1.5"/><rect x="13" y="3" width="9" height="18" rx="1.5"/></svg>
+    스펙 비교
+  </button>
+</nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
@@ -800,6 +999,126 @@ function renderTable(){
 
 function toggleAuto(){autoComp=!autoComp;document.getElementById('tog-auto').classList.toggle('on',autoComp);renderTable();}
 function toggleFeat(){showFeat=!showFeat;document.getElementById('tog-feat').classList.toggle('on',showFeat);renderTable();}
+
+/* ── 모바일 전용 함수 ─────────────────────────── */
+const isMob=()=>window.innerWidth<768;
+
+function openDrawer(){
+  document.getElementById('mob-overlay').classList.add('open');
+  document.getElementById('mob-drawer').classList.add('open');
+  document.body.style.overflow='hidden';
+  // 드로어 트리 동기화
+  const mobTree=document.getElementById('mob-tree');
+  if(mobTree)mobTree.innerHTML=document.getElementById('tree').innerHTML;
+  // 체크박스 이벤트 재바인딩
+  mobTree.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+    const[cat,brand,model]=cb.id.replace('cb-','').split('-').reduce((acc,v,i,arr)=>{
+      if(i===0)acc.push(v);else if(i===1)acc.push(v);else{if(!acc[2])acc.push(v);else acc[2]+='-'+v;}return acc;},[]);
+    cb.checked=selected.has(`${cat}|${brand}|${model}`);
+    cb.onchange=e=>onCheck(cat,brand,model,e.target.checked);
+  });
+  mobTree.querySelectorAll('.cat-hd,.br-hd').forEach(el=>{
+    el.onclick=()=>toggleSec(el);
+  });
+}
+
+function closeDrawer(){
+  document.getElementById('mob-overlay').classList.remove('open');
+  document.getElementById('mob-drawer').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function mobSwitchTab(name){
+  if(!isMob())return;
+  // 하단탭 active
+  document.querySelectorAll('.mob-tab').forEach(t=>t.classList.remove('active'));
+  const tab=document.getElementById('mobtab-'+name);
+  if(tab)tab.classList.add('active');
+  // 패널 전환
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  if(name==='view'){
+    document.getElementById('mob-panel-view').classList.add('active');
+    renderMobSpecView();
+  }else if(name==='compare'){
+    document.getElementById('panel-compare').classList.add('active');
+    // 모바일 비교표용 안내문 업데이트
+    if(selected.size===0){
+      const empty=document.getElementById('empty');
+      if(empty)empty.querySelector('.es').textContent='아래 모델 선택 버튼을 눌러 비교할 모델을 체크하세요. 최대 3개 권장.';
+    }
+    renderTable();
+  }
+}
+
+function renderMobSpecView(){
+  const container=document.getElementById('mob-spec-view');
+  if(!container)return;
+  const cnt=document.getElementById('mob-sel-count2');
+  if(cnt)cnt.textContent=selected.size?`${selected.size}개 선택`:'';
+  if(selected.size===0){
+    container.innerHTML='<div class="mob-model-sel-hint">위 버튼을 눌러 모델을 선택하세요</div>';
+    return;
+  }
+  const models=[...selected].map(key=>{
+    const[cat,brand,model]=key.split('|');
+    return{key,cat,brand,model,data:DATA[cat]?.[brand]?.[model]};
+  }).filter(m=>m.data);
+
+  container.innerHTML=models.map(m=>{
+    const info=CAT_INFO[m.cat]||{cls:'dp',color:'#1a56db',icon:'♪'};
+    const secKeys=Object.keys(m.data.specs||{});
+    const specsHtml=secKeys.map(sec=>{
+      const rows=Object.entries(m.data.specs[sec]||{});
+      if(!rows.length)return'';
+      return`<div class="mob-spec-sec">
+        <div class="mob-spec-sec-title">${sec}</div>
+        ${rows.map(([k,v])=>`<div class="mob-spec-row"><span class="mob-spec-key">${k}</span><span class="mob-spec-val">${v}</span></div>`).join('')}
+      </div>`;
+    }).join('');
+    const feats=(m.data.features||[]);
+    return`<div class="mob-spec-card">
+      <div class="mob-spec-header">
+        <div class="mob-spec-icon" style="background:${info.color}22">${info.icon}</div>
+        <div>
+          <div class="mob-spec-brand">${m.brand}</div>
+          <div class="mob-spec-name">${m.model}</div>
+          <div class="mob-spec-price">${m.data.price}</div>
+        </div>
+        <button onclick="removeModel('${m.key}');renderMobSpecView()" style="margin-left:auto;background:none;border:none;font-size:16px;color:var(--text3);cursor:pointer">✕</button>
+      </div>
+      ${feats.length?`<div class="mob-feat-tags">${feats.map(f=>`<span class="mob-feat-tag">${f}</span>`).join('')}</div>`:''}
+      ${specsHtml}
+    </div>`;
+  }).join('');
+}
+
+// onCheck 확장: 모바일 스펙보기도 업데이트
+const _origOnCheck=onCheck;
+function onCheck(cat,brand,model,checked){
+  const key=`${cat}|${brand}|${model}`;
+  if(checked){if(selected.size>=6){alert('최대 6개');
+    const cb=document.getElementById(`cb-${cat}-${brand}-${model}`);if(cb)cb.checked=false;return;}
+    selected.add(key);}
+  else selected.delete(key);
+  // PC 트리 동기화
+  document.querySelectorAll('.mi').forEach(el=>el.classList.toggle('checked',el.querySelector('input')?.checked));
+  updateCount();
+  if(isMob()&&document.getElementById('mob-panel-view')?.classList.contains('active')){
+    renderMobSpecView();
+  }else{
+    renderTable();
+  }
+}
+
+// 모바일 초기 탭 설정
+window.addEventListener('DOMContentLoaded',()=>{
+  if(isMob()){
+    // PC 패널 숨기고 모바일 뷰 활성화
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    const v=document.getElementById('mob-panel-view');
+    if(v)v.classList.add('active');
+  }
+});
 
 loadSheetData();
 </script>
